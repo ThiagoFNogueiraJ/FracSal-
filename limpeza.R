@@ -74,5 +74,7 @@ for(i in 1:5){
 }
 
 
-
-
+dataset <- read.csv("sgdc_tiago.txt", sep = "\t")
+unique(dataset$desc_status)
+dataset$desc_status == 'PENDENTE'
+str(dataset)
