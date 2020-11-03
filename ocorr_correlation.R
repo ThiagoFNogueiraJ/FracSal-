@@ -10,6 +10,9 @@ pdata <- pdata[!(pdata$desc_status == "PENDENTE"),]
 pdata <- pdata[!(pdata$desc_status == "NÃO VISUALIZADA"),]
 pdata <- pdata[!(pdata$desc_status == "VISTORIA PROGRAMADA"),]
 
+unique(pdata$ocorr_solic)
+
+alagamentos <- c("AVALIAÇÃO DE IMÓVEL ALAGADO", "ALAGAMENTO DE IMÓVEL", "ALAGAMENTO DE ÁREA")
 pdata$ocorr_solic <- ifelse(pdata$ocorr_solic %in% alagamentos, "ALAGAMENTO", pdata$ocorr_solic)
 pdata$ocorr_vist <- ifelse(pdata$ocorr_vist %in% alagamentos, "ALAGAMENTO", pdata$ocorr_vist)
 
@@ -46,22 +49,6 @@ for (i in tipos_ocorr) {
   }
 }
 
-matriz_corresp2 %>% 
-  as.data.frame() %>%
-  rownames_to_column("f_id") %>%
-  pivot_longer(-c(f_id), names_to = "samples", values_to = "counts") %>% 
-  ggplot(aes(x=samples, y=f_id, fill=counts)) + 
-  geom_raster() +
-  scale_fill_viridis_c()
-
-matriz_corresp2 %>% 
-  as.data.frame() %>%
-  rownames_to_column("f_id") %>%
-  pivot_longer(-c(f_id), names_to = "samples", values_to = "corresp") %>% 
-  ggplot(aes(x=samples, y=f_id)) + 
-  geom_tile(fill = corresp) +
-  geom_text(aes(label = round(corresp, 1))) +
-  scale_fill_gradient(low = "white", high = "red") 
 
 matriz <- matriz_corresp2 %>% 
   as.data.frame() %>%
@@ -71,4 +58,18 @@ matriz <- matriz_corresp2 %>%
 matriz %>%   ggplot(aes(x=samples, y=f_id)) + 
   geom_tile(aes(fill = corresp)) +
   geom_text(aes(label = round(corresp, 1))) +
-  scale_fill_gradient(low = "white", high = "red") 
+  scale_fill_gradient(low = "white", high = "red") +
+  xlab("Ocorrência observada durante a vistoria")+ 
+  ylab("Ocorrência relatada pelo solicitante") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+inter <- c("AMEACA DE DESABAMENTO", "DESLIZAMENTO DE TERRA", "AMEACA DE DESLIZAMENTO", "ALAGAMENTO")
+
+matriz[matriz$f_id %in% inter & matriz$samples %in% inter,] %>% ggplot(aes(x=samples, y=f_id)) + 
+  geom_tile(aes(fill = corresp)) +
+  geom_text(aes(label = round(corresp, 1), fontface= 2), size = 5) +
+  scale_fill_gradient(low = "white", high = "blue") +
+  labs(title = "Correspondência entre as ocorrências da solicitação e da vistoria",
+       y = "Ocorrência observada durante a vistoria",
+       x ="Ocorrência relatada pelo solicitante") +
+  theme(axis.text.x = element_text(angle = 0, vjust = 0.5, hjust=1)) 
