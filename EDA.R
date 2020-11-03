@@ -21,7 +21,7 @@ for (i in 2005:2019) {
   univ <- length(unique(sg[year(sg$data_solic) >= 2004 & year(sg$data_solic) <= i, ]$cod_proc))
   print(univ)
   novosproc = univ - length(unique(sg[year(sg$data_solic) >= 2004 & year(sg$data_solic) <= i-1, ]$cod_proc))
-  print(novosproc)
+  #print(novosproc)
   nvprocessos <- rbind(data.frame(Ano = i, Novos_Processo = novosproc), nvprocessos)
 }
 
@@ -30,4 +30,10 @@ nvprocessos %>% ggplot(aes(x = Ano, y = Novos_Processo)) +geom_line()
 abert_ano <- count(year(sg$data_solic))
 nvprocessos <- nvprocessos %>% arrange(nvprocessos, Ano)
 nvprocessos <- nvprocessos %>% mutate(sol_totais = abert_ano$freq, proporcao = (Novos_Processo / sol_totais)*100 )
-nvprocessos %>% ggplot(aes(fill = proporcao, x = Ano, y = sol_totais)) +  geom_bar(position = "fill", stat = "Identity") + geom_bar(stat = "Identity")
+nvprocessos %>% ggplot() +  geom_col(aes(fill = proporcao, x = Ano, y = sol_totais),position = "fill") 
+
+qplot(x = Ano, y = sol_totais, fill = proporcao, data = nvprocessos, geom = "col")
+ggplot(nvprocessos) +
+  geom_col(aes(x = Ano, y = sol_totais,fill = factor(proporcao)), position = "stack")
+
+           
