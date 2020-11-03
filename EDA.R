@@ -25,15 +25,16 @@ for (i in 2005:2019) {
   nvprocessos <- rbind(data.frame(Ano = i, Novos_Processo = novosproc), nvprocessos)
 }
 
-nvprocessos %>% ggplot(aes(x = Ano, y = Novos_Processo)) +geom_line() 
 
 abert_ano <- count(year(sg$data_solic))
 nvprocessos <- nvprocessos %>% arrange(nvprocessos, Ano)
 nvprocessos <- nvprocessos %>% mutate(sol_totais = abert_ano$freq, proporcao = (Novos_Processo / sol_totais)*100 )
-nvprocessos %>% ggplot() +  geom_col(aes(fill = proporcao, x = Ano, y = sol_totais),position = "fill") 
 
-qplot(x = Ano, y = sol_totais, fill = proporcao, data = nvprocessos, geom = "col")
-ggplot(nvprocessos) +
-  geom_col(aes(x = Ano, y = sol_totais,fill = factor(proporcao)), position = "stack")
-
-           
+#Gráfico de proporção entre novos processos e revistorias
+nvprocessos %>% mutate(revist = sol_totais - Novos_Processo) %>% 
+                          gather(Tipo, valor, -c(Ano, sol_totais, proporcao)) %>% 
+                          ggplot() +
+                          geom_bar(aes(x = Ano, y= valor, fill = factor(Tipo, levels = c("revist", "Novos_Processo"))), stat = "identity", position = "fill") 
+                          labs(x = "ano",
+                               y = "Proporção",
+                               title = "")
