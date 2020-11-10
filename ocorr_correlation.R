@@ -6,6 +6,7 @@ library(RColorBrewer)
 library(ggrepel)
 library(esquisse)
 library(zoo)
+library(forcats)
 
 
 
@@ -19,6 +20,10 @@ pdata <- pdata[!(pdata$desc_status == "PENDENTE"),]
 pdata <- pdata[!(pdata$desc_status == "NÃO VISUALIZADA"),]
 pdata <- pdata[!(pdata$desc_status == "VISTORIA PROGRAMADA"),]
 pdata <- pdata[!(pdata$desc_orig_solic == "ABERTA EM CAMPO"),]
+pdata <- pdata[!(pdata$desc_orig_solic == "OFICIO"),]
+pdata <- pdata[!(pdata$desc_orig_solic == "OUVIDORIA"),]
+
+
 
 
 unique(pdata$desc_orig_solic)
@@ -73,10 +78,41 @@ general_grph <- prop2 %>%      ggplot() + geom_bar(aes(x = name, y= Corresp, fil
                                     y = "Índice de correspondência (%)") 
 #ánálise por ano, para as 5 ocorrências mais frequentes 
 
+write.csv(sdata,"sgdc_teste.csv", row.names = FALSE)
+
+
 prop_ano <- sdata %>%  group_by(year(data_solic), month(data_solic), ocorr_solic) %>% 
                       summarise(coerencia = mean(coerencia)*100) 
 
-prop_ano %>% mutate(mes_ano = year)
+names(prop_ano)[1] <- ('ano')
+names(prop_ano)[2] <- ('mes')
+
+prop_ano <- prop_ano %>% mutate(mes_ano = as.yearmon(paste0(ano, "-0",mes)))
 names(prop_ano)[1] <- ('ano')
 prop_ano
-prop_ano[prop_ano$ocorr_solic == 'DESLIZAMENTO DE TERRA',] %>%  ggplot(aes(x=ano, y = coerencia)) +geom_line(aes(color = ocorr_solic))
+prop_ano[prop_ano$ocorr_solic == "DESLIZAMENTO DE TERRA" ,] %>%  ggplot(aes(x=mes, y = coerencia))+
+                                                                geom_rect(aes(xmin = 3, xmax = 7, ymin = 0, ymax = 100), fill = "grey", alpha = 0.05) +
+                                                                geom_line(aes(colour=as.factor(year(mes_ano)))) + 
+                                                                geom_hline(yintercept = 50,  color = "red", linetype = "dashed", size=0.9)+
+                                                                facet_wrap(~ano)
+
+
+
+sdata[!(sdata$ocorr_solic %in% delete) & sdata$desc_orig_solic != "SA / 156",] %>%  group_by(year(data_solic),ocorr_solic, desc_orig_solic) %>% 
+           summarise(coerencia =mean(coerencia)*100) %>% 
+           ggplot(aes(x=`year(data_solic)`, y = coerencia))+
+                  geom_line(aes(colour = as.factor(desc_orig_solic)), size = 1)+
+                  scale_y_continuous(limits = c(0,100))+
+                  geom_hline(yintercept = 50,  color = "red", linetype = "dashed", size=0.9)+
+                  geom_vline(xintercept = 2015,  color = "blue", linetype = "dashed", size=0.9)+
+                  facet_wrap(~ocorr_solic)
+        
+sdata[!(sdata$ocorr_solic %in% delete) & sdata$desc_orig_solic != "SA / 156",] %>%  group_by(year(data_solic),ocorr_solic) %>% 
+  summarise(coerencia =mean(coerencia)*100) %>% 
+  ggplot(aes(x=`year(data_solic)`, y = coerencia))+
+  geom_line( size = 1)+
+  scale_y_continuous(limits = c(0,100))+
+  geom_hline(yintercept = 50,  color = "red", linetype = "dashed", size=0.9)+
+  geom_vline(xintercept = 2015,  color = "blue", linetype = "dashed", size=0.9)+
+  facet_wrap(~ocorr_solic)
+
