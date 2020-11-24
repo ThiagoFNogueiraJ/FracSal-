@@ -1,0 +1,98 @@
+---
+title: "Indicador de correspondência"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+pdata<- read.csv("sgdc_anom.csv", sep = ",")
+```
+
+## Apresentação 
+
+Este relatório apresenta resultados preliminares da amálise exploratória dos dados do Sistema de Gestão da Defesa Civil. Propõe-se a criação de um novo indicador que pode ser usado para avaliar a confiabilidade dos dados estudados bem como a eficiência dos canais de atendimento em triar as solicitações que entram no sistema. 
+
+O indicador consiste em um número em (%), representando a fração das amastras em que o ocorrência indicada na solicitação (ocorr_solic) é igual à ocorrência observada em campo e registrada pelo técnico no momento da vistoria (ocorr_vist).
+
+
+## Os dados 
+
+Foram utilizados os regisstros do SGDC correspondentes ao período de 01/07/2004 a 31/12/2019, inicialmente contendo **147512 observações e 16 variáveis**. 
+
+```{r}
+head(pdata)
+```
+
+### Filtragem
+
+Para as análises pretendidas, o primeiro requisito é que fossem selecionadas apenas as solicitações que foram atendidas e que possuem um tipo de ocorrência registrado pelo técnico vistoriados. Assim, foram eliminadas as observações de acordo com o valor das variáveis:
+
+Status da solicitação (desc_status): CANCELADO, BLOQUEADO, PENDENTE, NÃO VISUALIZADA e VISTORIA PROGRAMADA. 
+Canal de abertura (orig_solic): ABERTA EM CAMPO, OFÍCIO e OUVIDORIA. 
+
+Optou-se por suprimir as solicitações com orig_solic = _ABERTA EM CAMPO_ pois, como as solicitações são também abertas no momento da vistoria pelo técnico vistoriador, ocorr_solic e ocorr_vist devem, por regra, serem iguais, o que desbalancearia a amostra. 
+As solicitações abertas via _OFÍCIO_ e _OUVIDORIA_ foram desconsideradas por fugirem do escopo de interesse da análise. 
+
+```{r}
+pdata <- pdata[!(pdata$desc_status == "CANCELADO"),]
+pdata <- pdata[!(pdata$desc_status == "BLOQUEADO"),]
+pdata <- pdata[!(pdata$desc_status == "PENDENTE"),]
+pdata <- pdata[!(pdata$desc_status == "NÃO VISUALIZADA"),]
+pdata <- pdata[!(pdata$desc_status == "VISTORIA PROGRAMADA"),]
+pdata <- pdata[!(pdata$desc_orig_solic == "ABERTA EM CAMPO"),]
+pdata <- pdata[!(pdata$desc_orig_solic == "OFICIO"),]
+pdata <- pdata[!(pdata$desc_orig_solic == "OUVIDORIA"),]
+
+```
+
+Também para facilitar a análise, as ocorrências _AVLIAÇÃO DE IMÓVEL ALAGADO_, _ALAGAMENTO DE IMÓVEL_ e _ALAGAMENTO DE IMÓVE_ foram sintetizadas em um único tipo _ALAGAMENTO_. 
+
+### Modelagem
+
+```{r}
+alagamentos <- c("AVALIAÇÃO DE IMÓVEL ALAGADO", "ALAGAMENTO DE IMÓVEL", "ALAGAMENTO DE ÁREA")
+pdata$ocorr_solic <- ifelse(pdata$ocorr_solic %in% alagamentos, "ALAGAMENTO", pdata$ocorr_solic)
+pdata$ocorr_vist <- ifelse(pdata$ocorr_vist %in% alagamentos, "ALAGAMENTO", pdata$ocorr_vist)
+
+```
+
+Por fim, criamos uma nova coluna no dataset, que deverá ter valor VERDADEIRO ( _TRUE_ ) se a ocorrência indicada na solicitação e a observada na vistoria coincidirem e FALSO ( _FALSE_ ) caso sejam diferentes. 
+
+O conjunto de dados final contem 90.046 observações e 17 variáveis. 
+
+```{r, echo = FALSE}
+sdata <- pdata %>% mutate(match = ifelse(ocorr_solic == ocorr_vist, TRUE, FALSE))
+head(sdata)
+```
+
+## Análises
+
+O valor de C para cada ocorrência pode ser obsevado no gráfico a seguir. 
+
+```{r}
+prop <- sdata %>%  group_by(ocorr_solic) %>% 
+                   summarise(C = mean(match)*100)
+
+ocorr_emerg = c("DESLIZAMENTO DE TERRA", "DESABAMENTO DE IMOVEL", "DESABAMENTO DE MURO", "EXPLOSAO",
+                 "PISTA ROMPIDA", "ARVORE CAIDA", "DESABAMENTO PARCIAL")
+delete <- c("VAZAMENTO DE GÁS", "ORIENTAÇÃO TÉCNICA", "AVALIACAO DA AREA", "ARMAZENAMENTO DE MATERIAIS PERIGOSOS", "DESABAMENTO DE BLOCOS DE UMA PEDREIRA" )
+
+prop_2 <- filter(prop, !(ocorr_solic %in% delete))%>%  
+  mutate(name = fct_reorder(ocorr_solic, C)) %>%  
+  mutate(resp = ifelse(ocorr_solic %in% ocorr_emerg, "Crítico", "Preventivo")) 
+prop_2 <- prop_2[order(-prop_2$C ),]
+
+prop_2 %>%      ggplot() + geom_bar(aes(x = name, y= C, fill = resp), stat = "identity") +
+                               geom_text(aes(x=ocorr_solic, y = C, hjust = -0.1, label = paste0(round(C,1), "%")))+
+                               scale_fill_manual(values = c("#3568ab", '#d9d9d9')) +
+                               geom_hline(yintercept = 50,  color = "red", linetype = "dashed", size=0.9)+
+                               theme_grey() +
+                               coord_flip() +
+                               theme(legend.position = "none")+
+                               labs(title = "Indicador de correspondência (C) por tipo de ocorrência",
+                                    caption = "Período analisado: 07/05/2020 a 31/12/2019. 
+                                               Total de observações: 96051", 
+                                    x = "Ocorrência",
+                                    y = "C") 
+
+
+```
