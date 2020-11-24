@@ -13,6 +13,7 @@ library(forcats)
 
 pdata<- read.csv("sgdc_anom.csv", sep = ",")
 
+dim(pdata)
 #cRIA O DATASET CAPENAS COM SOLICITAÇÕES QUE FORAM ATENDIDAS E EXISTEM VISTORIAS
 pdata <- pdata[!(pdata$desc_status == "CANCELADO"),]
 pdata <- pdata[!(pdata$desc_status == "BLOQUEADO"),]
@@ -34,12 +35,14 @@ sdata <- pdata %>%  mutate(coerencia = ifelse(ocorr_solic == ocorr_vist, TRUE, F
 proporcao <- sdata %>%  group_by(ocorr_solic) %>% 
             summarise(coerencia = mean(coerencia)*100)
 proporcao <- as.data.frame(proporcao)
-names(proporcao)[2] <- ("Corresp")
+names(proporcao)[2] <- ("C")
 
 proporcao <- proporcao[order(-proporcao$Corresp),]
 proporcao <- proporcao %>% mutate(mais_freq = NA)
 
-
+ort_tec <- sdata[sdata$ocorr_solic == "ORIENTAÇÃO TÉCNICA", ] %>%  group_by(ocorr_vist) %>% 
+                                                                    summarise(nv = n()/count())%>% 
+                                                                    arrange(-nv)
 #CALCULA A OCORRÊCNIA MAIS FREQUENTE NA VISTORIA, QUANDO NÃO É A MESMA QUE FOI ESPECIFICADA NA SOLICITAÇÃO 
 for (i in proporcao$ocorr_solic) {
   palaga <- sdata[sdata$ocorr_solic == i,]
