@@ -3,7 +3,7 @@ install.packages("esquisse")
 install.packages("zoo")
 install.packages("ggridges")
 
-detach(package:plyr)
+detach(package:corrplot)
 library(RColorBrewer)
 library(ggrepel)
 library(esquisse)
@@ -17,6 +17,7 @@ library(networkD3)
 #CARREGA O ARQUIVO 
 pdata<- read.csv("sgdc_anom.csv", sep = ",")
 
+dim(pdata)
 #cRIA O DATASET CAPENAS COM SOLICITAÇÕES QUE FORAM ATENDIDAS E EXISTEM VISTORIAS
 pdata <- pdata[!(pdata$desc_status == "CANCELADO"),]
 pdata <- pdata[!(pdata$desc_status == "BLOQUEADO"),]
@@ -44,7 +45,9 @@ names(proporcao)[2] <- ("Corresp")
 proporcao <- proporcao[order(-proporcao$Corresp),]
 proporcao <- proporcao %>% mutate(mais_freq = NA)
 
-
+ort_tec <- sdata[sdata$ocorr_solic == "ORIENTAÇÃO TÉCNICA", ] %>%  group_by(ocorr_vist) %>% 
+                                                                    summarise(nv = n()/count())%>% 
+                                                                    arrange(-nv)
 #CALCULA A OCORRÊCNIA MAIS FREQUENTE NA VISTORIA, QUANDO NÃO É A MESMA QUE FOI ESPECIFICADA NA SOLICITAÇÃO 
 for (i in proporcao$ocorr_solic) {
   palaga <- sdata[sdata$ocorr_solic == i,]
@@ -57,22 +60,14 @@ for (i in proporcao$ocorr_solic) {
 
 
 #Diagrama 
-links <- sdata[sdata$ocorr_solic == "DESLIZAMENTO DE TERRA",] %>% group_by(ocorr_solic, ocorr_vist) %>% 
+corr <- sdata %>% group_by(ocorr_solic, ocorr_vist) %>% 
           summarise(n = n()) %>% 
-          mutate(freq = n/sum(n))
-
-nodes <- data.frame(
-  nome =c(as.character(links$ocorr_solic), 
-         as.character(links$ocorr_vist)) %>% unique()
-)
-
-links$IDsource <- match(links$ocorr_solic, nodes$nome)-1 
-links$IDtarget <- match(links$ocorr_vist, nodes$nome)-1
-links$IDtarget[links$IDtarget == 0] <- 20
-sankeyNetwork(Links = links, Nodes = nodes,
-                   Source = "IDsource", Target = "IDtarget",
-                   Value = "freq", NodeID = "nome", 
-                   sinksRight=FALSE)
+          mutate(freq = n/sum(n)) %>% 
+          select(-c(n)) %>% 
+          pivot_wider(names_from = ocorr_solic, values_from = freq) %>% 
+          mutate_all(replace_na,0) 
+corr
+corrplot(corr, method = "circle")
 
 
 ocorr_emerg = c("DESLIZAMENTO DE TERRA", "DESABAMENTO DE IMOVEL", "DESABAMENTO DE MURO", "EXPLOSAO",
@@ -152,6 +147,17 @@ sdata[!(sdata$ocorr_solic %in% delete) & sdata$desc_orig_solic != "SA / 156",] %
   geom_hline(yintercept = 50,  color = "red", linetype = "dashed", size=0.9)+
   geom_vline(xintercept = 2015,  color = "blue", linetype = "dashed", size=0.9)+
   facet_wrap(~ocorr_solic)
+
+### Indicador por dia 
+
+ sdata[sdata$ocorr_solic == "DESLIZAMENTO DE TERRA",] %>% group_by(date(data_solic)) %>% 
+           summarise(c = mean(coerencia)*100) %>% 
+           ggplot() + geom_histogram(aes(x=c)) +
+           labs(title = "Histograma do indicador de correspondência por dia",
+                subtitle = "Apenas para deslizamento de terra",
+                caption = "Período analisado: 07/05/2020 a 31/12/2020.",
+                x = "valor do indicador",
+                y = "Frequência") 
 
 prop_ano[prop_ano$ocorr_solic == "DESLIZAMENTO DE TERRA" ,]   %>% ggplot(aes(x = coerencia, y = as.factor(ano), fill = stat(x)))+
                                                                  geom_density_ridges_gradient()+
