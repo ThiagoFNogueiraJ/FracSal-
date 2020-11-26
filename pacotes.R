@@ -1,18 +1,4 @@
-#Carrega bibliotecas
-
-install.packages("ggrepel")
-install.packages("esquisse")
-install.packages("zoo")
-install.packages("ggplot2")
-install.packages("tidyr")
-install.packages("tibble")
-install.packages("dplyr")
-install.packages("lubridate")
-install.packages("RColorBrewer")
-install.packages("forcats")
-install.packages("tidyverse")
-
-
+require(scales)
 library(ggplot2)
 library(tidyr)
 library(tibble)
@@ -24,5 +10,4 @@ library(ggrepel)
 library(esquisse)
 library(zoo)
 library(forcats)
-detach(package:plyr)
-library(tidyverse)
+

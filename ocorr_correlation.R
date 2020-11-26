@@ -10,6 +10,8 @@ library(esquisse)
 library(zoo)
 library(forcats)
 library(ggridges)
+library(networkD3)
+
 
 
 #CARREGA O ARQUIVO 
@@ -21,6 +23,7 @@ pdata <- pdata[!(pdata$desc_status == "BLOQUEADO"),]
 pdata <- pdata[!(pdata$desc_status == "PENDENTE"),]
 pdata <- pdata[!(pdata$desc_status == "NÃO VISUALIZADA"),]
 pdata <- pdata[!(pdata$desc_status == "VISTORIA PROGRAMADA"),]
+pdata <- pdata[!(pdata$ocorr_vist == "NULL"),]
 pdata <- pdata[!(pdata$desc_orig_solic == "ABERTA EM CAMPO"),]
 pdata <- pdata[!(pdata$desc_orig_solic == "OFICIO"),]
 pdata <- pdata[!(pdata$desc_orig_solic == "OUVIDORIA"),]
@@ -51,6 +54,26 @@ for (i in proporcao$ocorr_solic) {
            mais_comum <- ifelse(freq[1,1] == i, freq[2,1], freq[1,1])
           proporcao[proporcao$ocorr_solic == i,3] <- mais_comum
 }
+
+
+#Diagrama 
+links <- sdata[sdata$ocorr_solic == "DESLIZAMENTO DE TERRA",] %>% group_by(ocorr_solic, ocorr_vist) %>% 
+          summarise(n = n()) %>% 
+          mutate(freq = n/sum(n))
+
+nodes <- data.frame(
+  nome =c(as.character(links$ocorr_solic), 
+         as.character(links$ocorr_vist)) %>% unique()
+)
+
+links$IDsource <- match(links$ocorr_solic, nodes$nome)-1 
+links$IDtarget <- match(links$ocorr_vist, nodes$nome)-1
+links$IDtarget[links$IDtarget == 0] <- 20
+sankeyNetwork(Links = links, Nodes = nodes,
+                   Source = "IDsource", Target = "IDtarget",
+                   Value = "freq", NodeID = "nome", 
+                   sinksRight=FALSE)
+
 
 ocorr_emerg = c("DESLIZAMENTO DE TERRA", "DESABAMENTO DE IMOVEL", "DESABAMENTO DE MURO", "EXPLOSAO",
                  "PISTA ROMPIDA", "ARVORE CAIDA", "DESABAMENTO PARCIAL")
