@@ -73,7 +73,7 @@ pdata$ocorr_vist <- ifelse(pdata$ocorr_vist %in% alagamentos, "ALAGAMENTO", pdat
 
 Por fim, criamos uma nova coluna no dataset, que deverá ter valor VERDADEIRO ( _TRUE_ ) se a ocorrência indicada na solicitação e a observada na vistoria coincidirem e FALSO ( _FALSE_ ) caso sejam diferentes. 
 
-O conjunto de dados final contem 90.046 observações e 17 variáveis. 
+O conjunto de dados final contem 88.760 observações e 17 variáveis. 
 
 ```{r, echo = FALSE, , warning=FALSE, message=FALSE}
 sdata <- pdata %>% mutate(match = ifelse(ocorr_solic == ocorr_vist, TRUE, FALSE))
@@ -108,7 +108,7 @@ prop_2 %>%      ggplot() + geom_bar(aes(x = name, y= C, fill = resp), stat = "id
                                theme(legend.position = "none")+
                                labs(title = "Indicador de correspondência (C) por tipo de ocorrência",
                                     caption = "Período analisado: 07/05/2020 a 31/12/2019. 
-                                               Total de observações: 96051", 
+                                               Total de observações: 88760", 
                                     x = "Ocorrência",
                                     y = "C") 
 ```
