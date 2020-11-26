@@ -1,13 +1,14 @@
 install.packages("janitor")
 install.packages("gganimate")
 install.packages("rcartocolor")
+install.packages("forcats")
 
 library(tidyverse)
 library(lubridate)
 library(janitor)
 library(gganimate)
 library(rcartocolor)
-
+library(forcats)
 sg <- read.csv("sgdc_anom.csv", sep = ",")
 str(sg)
 
