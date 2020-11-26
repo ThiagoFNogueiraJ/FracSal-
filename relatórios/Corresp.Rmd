@@ -55,6 +55,8 @@ pdata <- pdata[!(pdata$desc_status == "VISTORIA PROGRAMADA"),]
 pdata <- pdata[!(pdata$desc_orig_solic == "ABERTA EM CAMPO"),]
 pdata <- pdata[!(pdata$desc_orig_solic == "OFICIO"),]
 pdata <- pdata[!(pdata$desc_orig_solic == "OUVIDORIA"),]
+pdata <- pdata[!(pdata$ocorr_vist == "NULL"),]
+
 
 ```
 

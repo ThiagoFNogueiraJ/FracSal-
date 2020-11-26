@@ -1,16 +1,18 @@
 install.packages("ggrepel")
 install.packages("esquisse")
 install.packages("zoo")
+install.packages("ggridges")
+
 detach(package:plyr)
 library(RColorBrewer)
 library(ggrepel)
 library(esquisse)
 library(zoo)
 library(forcats)
+library(ggridges)
 
 
-
-
+#CARREGA O ARQUIVO 
 pdata<- read.csv("sgdc_anom.csv", sep = ",")
 
 #cRIA O DATASET CAPENAS COM SOLICITAÇÕES QUE FORAM ATENDIDAS E EXISTEM VISTORIAS
@@ -128,3 +130,7 @@ sdata[!(sdata$ocorr_solic %in% delete) & sdata$desc_orig_solic != "SA / 156",] %
   geom_vline(xintercept = 2015,  color = "blue", linetype = "dashed", size=0.9)+
   facet_wrap(~ocorr_solic)
 
+prop_ano[prop_ano$ocorr_solic == "DESLIZAMENTO DE TERRA" ,]   %>% ggplot(aes(x = coerencia, y = as.factor(ano), fill = stat(x)))+
+                                                                 geom_density_ridges_gradient()+
+                                                                scale_fill_gradientn(colours = rev(brewer.pal(11, 'Spectral')), breaks = seq(0,100,10))
+                                                                
