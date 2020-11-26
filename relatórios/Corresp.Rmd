@@ -2,7 +2,7 @@
 title: "Indicador de correspondência"
 output: html_document
 ---
-```{r, echo = FALSE}
+```{r, echo = FALSE, warning=FALSE, message=FALSE}
 library(ggplot2)
 library(tidyr)
 library(tibble)
@@ -17,7 +17,7 @@ library(tidyverse)
 ```
 
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, warning=FALSE, message=FALSE}
 pdata<- read.csv("sgdc_anom.csv", sep = ",")
 ```
 
@@ -32,7 +32,7 @@ O indicador consiste em um número em (%), representando a fração das amastras
 
 Foram utilizados os regisstros do SGDC correspondentes ao período de 01/07/2004 a 31/12/2019, inicialmente contendo **147512 observações e 16 variáveis**. 
 
-```{r}
+```{r,warning=FALSE, message=FALSE}
 head(pdata)
 ```
 
@@ -46,7 +46,7 @@ Canal de abertura (orig_solic): ABERTA EM CAMPO, OFÍCIO e OUVIDORIA.
 Optou-se por suprimir as solicitações com orig_solic = _ABERTA EM CAMPO_ pois, como as solicitações são também abertas no momento da vistoria pelo técnico vistoriador, ocorr_solic e ocorr_vist devem, por regra, serem iguais, o que desbalancearia a amostra. 
 As solicitações abertas via _OFÍCIO_ e _OUVIDORIA_ foram desconsideradas por fugirem do escopo de interesse da análise. 
 
-```{r}
+```{r, warning=FALSE, message=FALSE}
 pdata <- pdata[!(pdata$desc_status == "CANCELADO"),]
 pdata <- pdata[!(pdata$desc_status == "BLOQUEADO"),]
 pdata <- pdata[!(pdata$desc_status == "PENDENTE"),]
@@ -55,6 +55,8 @@ pdata <- pdata[!(pdata$desc_status == "VISTORIA PROGRAMADA"),]
 pdata <- pdata[!(pdata$desc_orig_solic == "ABERTA EM CAMPO"),]
 pdata <- pdata[!(pdata$desc_orig_solic == "OFICIO"),]
 pdata <- pdata[!(pdata$desc_orig_solic == "OUVIDORIA"),]
+pdata <- pdata[!(pdata$ocorr_vist == "NULL"),]
+
 
 ```
 
@@ -62,7 +64,7 @@ Também para facilitar a análise, as ocorrências _AVLIAÇÃO DE IMÓVEL ALAGAD
 
 ### Modelagem
 
-```{r}
+```{r, warning=FALSE, message=FALSE}
 alagamentos <- c("AVALIAÇÃO DE IMÓVEL ALAGADO", "ALAGAMENTO DE IMÓVEL", "ALAGAMENTO DE ÁREA")
 pdata$ocorr_solic <- ifelse(pdata$ocorr_solic %in% alagamentos, "ALAGAMENTO", pdata$ocorr_solic)
 pdata$ocorr_vist <- ifelse(pdata$ocorr_vist %in% alagamentos, "ALAGAMENTO", pdata$ocorr_vist)
@@ -73,16 +75,18 @@ Por fim, criamos uma nova coluna no dataset, que deverá ter valor VERDADEIRO ( 
 
 O conjunto de dados final contem 90.046 observações e 17 variáveis. 
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, , warning=FALSE, message=FALSE}
 sdata <- pdata %>% mutate(match = ifelse(ocorr_solic == ocorr_vist, TRUE, FALSE))
 head(sdata)
 ```
 
 ## Análises
 
-O valor de C para cada ocorrência pode ser obsevado no gráfico a seguir. 
+### Geral 
+O valor de C para cada ocorrência pode ser obsevado no gráfico a seguir. Observa-se que quatro ocorrências críticas, que exigem uma resposta imediata da Defesa Civil e demais órgãos do SMPDC, mostram valores entre 50% e 60%, enquanto outras três do tipo ficam abaixo dos 40%. 
+Podemos dizer a partir daí que uma solicitação aberta como **deslizamento de terra** tem uma chance aproximada de 50% de **não** ser um deslizamento de terra real, as mesmas chances de tirar um "cara" ao lançar uma moeda. 
 
-```{r}
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
 prop <- sdata %>%  group_by(ocorr_solic) %>% 
                    summarise(C = mean(match)*100)
 
@@ -107,6 +111,5 @@ prop_2 %>%      ggplot() + geom_bar(aes(x = name, y= C, fill = resp), stat = "id
                                                Total de observações: 96051", 
                                     x = "Ocorrência",
                                     y = "C") 
-
-
 ```
+

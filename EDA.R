@@ -27,7 +27,8 @@ for (i in 2005:2019) {
 }
 
 
-abert_ano <- count(year(sg$data_solic))
+abert_ano <- sg %>% group_by(year(data_solic)) %>%  
+                    summarise(freq = n())
 nvprocessos <- nvprocessos %>% arrange(nvprocessos, Ano)
 nvprocessos <- nvprocessos %>% mutate(sol_totais = abert_ano$freq, proporcao = (Novos_Processo / sol_totais)*100 )
 
@@ -37,5 +38,5 @@ nvprocessos %>% mutate(revist = sol_totais - Novos_Processo) %>%
                           ggplot() +
                           geom_bar(aes(x = Ano, y= valor, fill = factor(Tipo, levels = c("revist", "Novos_Processo"))), stat = "identity", position = "fill") 
                           labs(x = "ano",
-                               y = "Proporção",
+                               y = "Proporção de novos processos",
                                title = "")

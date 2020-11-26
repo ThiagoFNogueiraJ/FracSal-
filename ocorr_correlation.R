@@ -1,16 +1,20 @@
 install.packages("ggrepel")
 install.packages("esquisse")
 install.packages("zoo")
-detach(package:plyr)
+install.packages("ggridges")
+
+detach(package:corrplot)
 library(RColorBrewer)
 library(ggrepel)
 library(esquisse)
 library(zoo)
 library(forcats)
+library(ggridges)
+library(networkD3)
 
 
 
-
+#CARREGA O ARQUIVO 
 pdata<- read.csv("sgdc_anom.csv", sep = ",")
 
 dim(pdata)
@@ -20,6 +24,7 @@ pdata <- pdata[!(pdata$desc_status == "BLOQUEADO"),]
 pdata <- pdata[!(pdata$desc_status == "PENDENTE"),]
 pdata <- pdata[!(pdata$desc_status == "NÃO VISUALIZADA"),]
 pdata <- pdata[!(pdata$desc_status == "VISTORIA PROGRAMADA"),]
+pdata <- pdata[!(pdata$ocorr_vist == "NULL"),]
 pdata <- pdata[!(pdata$desc_orig_solic == "ABERTA EM CAMPO"),]
 pdata <- pdata[!(pdata$desc_orig_solic == "OFICIO"),]
 pdata <- pdata[!(pdata$desc_orig_solic == "OUVIDORIA"),]
@@ -52,6 +57,18 @@ for (i in proporcao$ocorr_solic) {
            mais_comum <- ifelse(freq[1,1] == i, freq[2,1], freq[1,1])
           proporcao[proporcao$ocorr_solic == i,3] <- mais_comum
 }
+
+
+#Diagrama 
+corr <- sdata %>% group_by(ocorr_solic, ocorr_vist) %>% 
+          summarise(n = n()) %>% 
+          mutate(freq = n/sum(n)) %>% 
+          select(-c(n)) %>% 
+          pivot_wider(names_from = ocorr_solic, values_from = freq) %>% 
+          mutate_all(replace_na,0) 
+corr
+corrplot(corr, method = "circle")
+
 
 ocorr_emerg = c("DESLIZAMENTO DE TERRA", "DESABAMENTO DE IMOVEL", "DESABAMENTO DE MURO", "EXPLOSAO",
                  "PISTA ROMPIDA", "ARVORE CAIDA", "DESABAMENTO PARCIAL")
@@ -142,3 +159,7 @@ sdata[!(sdata$ocorr_solic %in% delete) & sdata$desc_orig_solic != "SA / 156",] %
                 x = "valor do indicador",
                 y = "Frequência") 
 
+prop_ano[prop_ano$ocorr_solic == "DESLIZAMENTO DE TERRA" ,]   %>% ggplot(aes(x = coerencia, y = as.factor(ano), fill = stat(x)))+
+                                                                 geom_density_ridges_gradient()+
+                                                                scale_fill_gradientn(colours = rev(brewer.pal(11, 'Spectral')), breaks = seq(0,100,10))
+                                                                
