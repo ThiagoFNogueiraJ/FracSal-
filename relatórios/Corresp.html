@@ -366,40 +366,6 @@ summary {
 </div>
 
 
-<pre><code>## 
-## Attaching package: &#39;dplyr&#39;</code></pre>
-<pre><code>## The following objects are masked from &#39;package:stats&#39;:
-## 
-##     filter, lag</code></pre>
-<pre><code>## The following objects are masked from &#39;package:base&#39;:
-## 
-##     intersect, setdiff, setequal, union</code></pre>
-<pre><code>## 
-## Attaching package: &#39;lubridate&#39;</code></pre>
-<pre><code>## The following objects are masked from &#39;package:base&#39;:
-## 
-##     date, intersect, setdiff, union</code></pre>
-<pre><code>## Warning: package &#39;ggrepel&#39; was built under R version 4.0.3</code></pre>
-<pre><code>## Warning: package &#39;esquisse&#39; was built under R version 4.0.3</code></pre>
-<pre><code>## Warning: package &#39;zoo&#39; was built under R version 4.0.3</code></pre>
-<pre><code>## 
-## Attaching package: &#39;zoo&#39;</code></pre>
-<pre><code>## The following objects are masked from &#39;package:base&#39;:
-## 
-##     as.Date, as.Date.numeric</code></pre>
-<pre><code>## Warning: package &#39;forcats&#39; was built under R version 4.0.3</code></pre>
-<pre><code>## Warning: package &#39;tidyverse&#39; was built under R version 4.0.3</code></pre>
-<pre><code>## -- Attaching packages -------------------------------------------------------------------------------------------------------------------------------------- tidyverse 1.3.0 --</code></pre>
-<pre><code>## v readr   1.3.1     v stringr 1.4.0
-## v purrr   0.3.4</code></pre>
-<pre><code>## -- Conflicts ----------------------------------------------------------------------------------------------------------------------------------------- tidyverse_conflicts() --
-## x lubridate::as.difftime() masks base::as.difftime()
-## x lubridate::date()        masks base::date()
-## x dplyr::filter()          masks stats::filter()
-## x lubridate::intersect()   masks base::intersect()
-## x dplyr::lag()             masks stats::lag()
-## x lubridate::setdiff()     masks base::setdiff()
-## x lubridate::union()       masks base::union()</code></pre>
 <div id="apresentação" class="section level2">
 <h2>Apresentação</h2>
 <p>Este relatório apresenta resultados preliminares da amálise exploratória dos dados do Sistema de Gestão da Defesa Civil. Propõe-se a criação de um novo indicador que pode ser usado para avaliar a confiabilidade dos dados estudados bem como a eficiência dos canais de atendimento em triar as solicitações que entram no sistema.</p>
@@ -408,101 +374,761 @@ summary {
 <div id="os-dados" class="section level2">
 <h2>Os dados</h2>
 <p>Foram utilizados os regisstros do SGDC correspondentes ao período de 01/07/2004 a 31/12/2019, inicialmente contendo <strong>147512 observações e 16 variáveis</strong>.</p>
-<pre class="r"><code>head(pdata)</code></pre>
-<pre><code>##   cod_proc          data_solic cod_logra                 desc_logra
-## 1   100990 2019-12-31 20:08:38      9330        RUA ÁLVARO BAQUEIRO
-## 2   100989 2019-12-31 19:13:20      8116 ESTRADA DO COQUEIRO GRANDE
-## 3    99790 2019-12-31 17:05:54      9126             RUA DA ADUTORA
-## 4   100987 2019-12-31 16:49:36     21133     2ª TRAVESSA BOM PASTOR
-## 5   100986 2019-12-31 16:36:40     23359           RUA OSCAR SEIXAS
-## 6   100985 2019-12-31 16:32:40      9126             RUA DA ADUTORA
-##   num_imov_solic        nome_bairro               desc_pb coord_xi_logra
-## 1             6E             ITAPUA       ITAPUÃ/IPITANGA   -38.36292050
-## 2      7-1ºANDAR  FAZENDA GRANDE II            CAJAZEIRAS   -38.39949100
-## 3       121-CASA      SÃO CRISTOVÃO       ITAPUÃ/IPITANGA   -38.35523480
-## 4        24-CASA CAMPINAS DE PIRAJÁ LIBERDADE/SAO CAETANO   -38.47318120
-## 5            S/N             PIRAJA               VALÉRIA   -38.46944190
-## 6         7-CASA      SAO CRISTOVAO       ITAPUÃ/IPITANGA   -38.35523480
-##   coord_yi_logra           ocorr_solic desc_orig_solic tipo_vist_solic
-## 1   -12.94140110  ALAGAMENTO DE IMÓVEL       199 / 156          IMÓVEL
-## 2   -12.90519790           INFILTRAÇÃO       199 / 156          IMÓVEL
-## 3   -12.91639220  ALAGAMENTO DE IMÓVEL       199 / 156          IMÓVEL
-## 4   -12.92414910  ALAGAMENTO DE IMÓVEL       199 / 156          IMÓVEL
-## 5   -12.90376450 AMEACA DE DESABAMENTO       199 / 156          IMÓVEL
-## 6   -12.91639220  ALAGAMENTO DE IMÓVEL       199 / 156          IMÓVEL
-##              ocorr_vist           data_vist tipo_vist_vist          desc_status
-## 1  ALAGAMENTO DE IMÓVEL 2020-01-02 12:32:53         IMÓVEL            CONCLUÍDO
-## 2     AVALIACAO DA AREA 2020-01-02 00:00:00         IMÓVEL          ENC. SOCIAL
-## 3  ALAGAMENTO DE IMÓVEL 2020-01-02 00:00:00         IMÓVEL            CONCLUÍDO
-## 4  ALAGAMENTO DE IMÓVEL 2020-01-03 09:41:21         IMÓVEL            CONCLUÍDO
-## 5 AMEACA DE DESABAMENTO 2020-01-06 00:00:00         IMÓVEL            CONCLUÍDO
-## 6  ALAGAMENTO DE IMÓVEL 2020-01-02 00:00:00         IMÓVEL ENC. SOCIAL E CHEFIA</code></pre>
+<pre class="r"><code>pdata %&gt;% head() %&gt;% 
+          formattable::formattable()</code></pre>
+<table class="table table-condensed">
+<thead>
+<tr>
+<th style="text-align:right;">
+cod_proc
+</th>
+<th style="text-align:right;">
+data_solic
+</th>
+<th style="text-align:right;">
+cod_logra
+</th>
+<th style="text-align:right;">
+desc_logra
+</th>
+<th style="text-align:right;">
+num_imov_solic
+</th>
+<th style="text-align:right;">
+nome_bairro
+</th>
+<th style="text-align:right;">
+desc_pb
+</th>
+<th style="text-align:right;">
+coord_xi_logra
+</th>
+<th style="text-align:right;">
+coord_yi_logra
+</th>
+<th style="text-align:right;">
+ocorr_solic
+</th>
+<th style="text-align:right;">
+desc_orig_solic
+</th>
+<th style="text-align:right;">
+tipo_vist_solic
+</th>
+<th style="text-align:right;">
+ocorr_vist
+</th>
+<th style="text-align:right;">
+data_vist
+</th>
+<th style="text-align:right;">
+tipo_vist_vist
+</th>
+<th style="text-align:right;">
+desc_status
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+100990
+</td>
+<td style="text-align:right;">
+2019-12-31 20:08:38
+</td>
+<td style="text-align:right;">
+9330
+</td>
+<td style="text-align:right;">
+RUA ÁLVARO BAQUEIRO
+</td>
+<td style="text-align:right;">
+6E
+</td>
+<td style="text-align:right;">
+ITAPUA
+</td>
+<td style="text-align:right;">
+ITAPUÃ/IPITANGA
+</td>
+<td style="text-align:right;">
+-38.36292050
+</td>
+<td style="text-align:right;">
+-12.94140110
+</td>
+<td style="text-align:right;">
+ALAGAMENTO DE IMÓVEL
+</td>
+<td style="text-align:right;">
+199 / 156
+</td>
+<td style="text-align:right;">
+IMÓVEL
+</td>
+<td style="text-align:right;">
+ALAGAMENTO DE IMÓVEL
+</td>
+<td style="text-align:right;">
+2020-01-02 12:32:53
+</td>
+<td style="text-align:right;">
+IMÓVEL
+</td>
+<td style="text-align:right;">
+CONCLUÍDO
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+100989
+</td>
+<td style="text-align:right;">
+2019-12-31 19:13:20
+</td>
+<td style="text-align:right;">
+8116
+</td>
+<td style="text-align:right;">
+ESTRADA DO COQUEIRO GRANDE
+</td>
+<td style="text-align:right;">
+7-1ºANDAR
+</td>
+<td style="text-align:right;">
+FAZENDA GRANDE II
+</td>
+<td style="text-align:right;">
+CAJAZEIRAS
+</td>
+<td style="text-align:right;">
+-38.39949100
+</td>
+<td style="text-align:right;">
+-12.90519790
+</td>
+<td style="text-align:right;">
+INFILTRAÇÃO
+</td>
+<td style="text-align:right;">
+199 / 156
+</td>
+<td style="text-align:right;">
+IMÓVEL
+</td>
+<td style="text-align:right;">
+AVALIACAO DA AREA
+</td>
+<td style="text-align:right;">
+2020-01-02 00:00:00
+</td>
+<td style="text-align:right;">
+IMÓVEL
+</td>
+<td style="text-align:right;">
+ENC. SOCIAL
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+99790
+</td>
+<td style="text-align:right;">
+2019-12-31 17:05:54
+</td>
+<td style="text-align:right;">
+9126
+</td>
+<td style="text-align:right;">
+RUA DA ADUTORA
+</td>
+<td style="text-align:right;">
+121-CASA
+</td>
+<td style="text-align:right;">
+SÃO CRISTOVÃO
+</td>
+<td style="text-align:right;">
+ITAPUÃ/IPITANGA
+</td>
+<td style="text-align:right;">
+-38.35523480
+</td>
+<td style="text-align:right;">
+-12.91639220
+</td>
+<td style="text-align:right;">
+ALAGAMENTO DE IMÓVEL
+</td>
+<td style="text-align:right;">
+199 / 156
+</td>
+<td style="text-align:right;">
+IMÓVEL
+</td>
+<td style="text-align:right;">
+ALAGAMENTO DE IMÓVEL
+</td>
+<td style="text-align:right;">
+2020-01-02 00:00:00
+</td>
+<td style="text-align:right;">
+IMÓVEL
+</td>
+<td style="text-align:right;">
+CONCLUÍDO
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+100987
+</td>
+<td style="text-align:right;">
+2019-12-31 16:49:36
+</td>
+<td style="text-align:right;">
+21133
+</td>
+<td style="text-align:right;">
+2ª TRAVESSA BOM PASTOR
+</td>
+<td style="text-align:right;">
+24-CASA
+</td>
+<td style="text-align:right;">
+CAMPINAS DE PIRAJÁ
+</td>
+<td style="text-align:right;">
+LIBERDADE/SAO CAETANO
+</td>
+<td style="text-align:right;">
+-38.47318120
+</td>
+<td style="text-align:right;">
+-12.92414910
+</td>
+<td style="text-align:right;">
+ALAGAMENTO DE IMÓVEL
+</td>
+<td style="text-align:right;">
+199 / 156
+</td>
+<td style="text-align:right;">
+IMÓVEL
+</td>
+<td style="text-align:right;">
+ALAGAMENTO DE IMÓVEL
+</td>
+<td style="text-align:right;">
+2020-01-03 09:41:21
+</td>
+<td style="text-align:right;">
+IMÓVEL
+</td>
+<td style="text-align:right;">
+CONCLUÍDO
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+100986
+</td>
+<td style="text-align:right;">
+2019-12-31 16:36:40
+</td>
+<td style="text-align:right;">
+23359
+</td>
+<td style="text-align:right;">
+RUA OSCAR SEIXAS
+</td>
+<td style="text-align:right;">
+S/N
+</td>
+<td style="text-align:right;">
+PIRAJA
+</td>
+<td style="text-align:right;">
+VALÉRIA
+</td>
+<td style="text-align:right;">
+-38.46944190
+</td>
+<td style="text-align:right;">
+-12.90376450
+</td>
+<td style="text-align:right;">
+AMEACA DE DESABAMENTO
+</td>
+<td style="text-align:right;">
+199 / 156
+</td>
+<td style="text-align:right;">
+IMÓVEL
+</td>
+<td style="text-align:right;">
+AMEACA DE DESABAMENTO
+</td>
+<td style="text-align:right;">
+2020-01-06 00:00:00
+</td>
+<td style="text-align:right;">
+IMÓVEL
+</td>
+<td style="text-align:right;">
+CONCLUÍDO
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+100985
+</td>
+<td style="text-align:right;">
+2019-12-31 16:32:40
+</td>
+<td style="text-align:right;">
+9126
+</td>
+<td style="text-align:right;">
+RUA DA ADUTORA
+</td>
+<td style="text-align:right;">
+7-CASA
+</td>
+<td style="text-align:right;">
+SAO CRISTOVAO
+</td>
+<td style="text-align:right;">
+ITAPUÃ/IPITANGA
+</td>
+<td style="text-align:right;">
+-38.35523480
+</td>
+<td style="text-align:right;">
+-12.91639220
+</td>
+<td style="text-align:right;">
+ALAGAMENTO DE IMÓVEL
+</td>
+<td style="text-align:right;">
+199 / 156
+</td>
+<td style="text-align:right;">
+IMÓVEL
+</td>
+<td style="text-align:right;">
+ALAGAMENTO DE IMÓVEL
+</td>
+<td style="text-align:right;">
+2020-01-02 00:00:00
+</td>
+<td style="text-align:right;">
+IMÓVEL
+</td>
+<td style="text-align:right;">
+ENC. SOCIAL E CHEFIA
+</td>
+</tr>
+</tbody>
+</table>
 <div id="filtragem" class="section level3">
 <h3>Filtragem</h3>
 <p>Para as análises pretendidas, o primeiro requisito é que fossem selecionadas apenas as solicitações que foram atendidas e que possuem um tipo de ocorrência registrado pelo técnico vistoriados. Assim, foram eliminadas as observações de acordo com o valor das variáveis:</p>
 <p>Status da solicitação (desc_status): CANCELADO, BLOQUEADO, PENDENTE, NÃO VISUALIZADA e VISTORIA PROGRAMADA. Canal de abertura (orig_solic): ABERTA EM CAMPO, OFÍCIO e OUVIDORIA.</p>
 <p>Optou-se por suprimir as solicitações com orig_solic = <em>ABERTA EM CAMPO</em> pois, como as solicitações são também abertas no momento da vistoria pelo técnico vistoriador, ocorr_solic e ocorr_vist devem, por regra, serem iguais, o que desbalancearia a amostra. As solicitações abertas via <em>OFÍCIO</em> e <em>OUVIDORIA</em> foram desconsideradas por fugirem do escopo de interesse da análise.</p>
-<pre class="r"><code>pdata &lt;- pdata[!(pdata$desc_status == &quot;CANCELADO&quot;),]
-pdata &lt;- pdata[!(pdata$desc_status == &quot;BLOQUEADO&quot;),]
-pdata &lt;- pdata[!(pdata$desc_status == &quot;PENDENTE&quot;),]
-pdata &lt;- pdata[!(pdata$desc_status == &quot;NÃO VISUALIZADA&quot;),]
-pdata &lt;- pdata[!(pdata$desc_status == &quot;VISTORIA PROGRAMADA&quot;),]
-pdata &lt;- pdata[!(pdata$desc_orig_solic == &quot;ABERTA EM CAMPO&quot;),]
-pdata &lt;- pdata[!(pdata$desc_orig_solic == &quot;OFICIO&quot;),]
-pdata &lt;- pdata[!(pdata$desc_orig_solic == &quot;OUVIDORIA&quot;),]</code></pre>
 <p>Também para facilitar a análise, as ocorrências <em>AVLIAÇÃO DE IMÓVEL ALAGADO</em>, <em>ALAGAMENTO DE IMÓVEL</em> e <em>ALAGAMENTO DE IMÓVE</em> foram sintetizadas em um único tipo <em>ALAGAMENTO</em>.</p>
 </div>
 <div id="modelagem" class="section level3">
 <h3>Modelagem</h3>
-<pre class="r"><code>alagamentos &lt;- c(&quot;AVALIAÇÃO DE IMÓVEL ALAGADO&quot;, &quot;ALAGAMENTO DE IMÓVEL&quot;, &quot;ALAGAMENTO DE ÁREA&quot;)
-pdata$ocorr_solic &lt;- ifelse(pdata$ocorr_solic %in% alagamentos, &quot;ALAGAMENTO&quot;, pdata$ocorr_solic)
-pdata$ocorr_vist &lt;- ifelse(pdata$ocorr_vist %in% alagamentos, &quot;ALAGAMENTO&quot;, pdata$ocorr_vist)</code></pre>
 <p>Por fim, criamos uma nova coluna no dataset, que deverá ter valor VERDADEIRO ( <em>TRUE</em> ) se a ocorrência indicada na solicitação e a observada na vistoria coincidirem e FALSO ( <em>FALSE</em> ) caso sejam diferentes.</p>
 <p>O conjunto de dados final contem 90.046 observações e 17 variáveis.</p>
-<pre><code>##   cod_proc          data_solic cod_logra                 desc_logra
-## 1   100990 2019-12-31 20:08:38      9330        RUA ÁLVARO BAQUEIRO
-## 2   100989 2019-12-31 19:13:20      8116 ESTRADA DO COQUEIRO GRANDE
-## 3    99790 2019-12-31 17:05:54      9126             RUA DA ADUTORA
-## 4   100987 2019-12-31 16:49:36     21133     2ª TRAVESSA BOM PASTOR
-## 5   100986 2019-12-31 16:36:40     23359           RUA OSCAR SEIXAS
-## 6   100985 2019-12-31 16:32:40      9126             RUA DA ADUTORA
-##   num_imov_solic        nome_bairro               desc_pb coord_xi_logra
-## 1             6E             ITAPUA       ITAPUÃ/IPITANGA   -38.36292050
-## 2      7-1ºANDAR  FAZENDA GRANDE II            CAJAZEIRAS   -38.39949100
-## 3       121-CASA      SÃO CRISTOVÃO       ITAPUÃ/IPITANGA   -38.35523480
-## 4        24-CASA CAMPINAS DE PIRAJÁ LIBERDADE/SAO CAETANO   -38.47318120
-## 5            S/N             PIRAJA               VALÉRIA   -38.46944190
-## 6         7-CASA      SAO CRISTOVAO       ITAPUÃ/IPITANGA   -38.35523480
-##   coord_yi_logra           ocorr_solic desc_orig_solic tipo_vist_solic
-## 1   -12.94140110            ALAGAMENTO       199 / 156          IMÓVEL
-## 2   -12.90519790           INFILTRAÇÃO       199 / 156          IMÓVEL
-## 3   -12.91639220            ALAGAMENTO       199 / 156          IMÓVEL
-## 4   -12.92414910            ALAGAMENTO       199 / 156          IMÓVEL
-## 5   -12.90376450 AMEACA DE DESABAMENTO       199 / 156          IMÓVEL
-## 6   -12.91639220            ALAGAMENTO       199 / 156          IMÓVEL
-##              ocorr_vist           data_vist tipo_vist_vist          desc_status
-## 1            ALAGAMENTO 2020-01-02 12:32:53         IMÓVEL            CONCLUÍDO
-## 2     AVALIACAO DA AREA 2020-01-02 00:00:00         IMÓVEL          ENC. SOCIAL
-## 3            ALAGAMENTO 2020-01-02 00:00:00         IMÓVEL            CONCLUÍDO
-## 4            ALAGAMENTO 2020-01-03 09:41:21         IMÓVEL            CONCLUÍDO
-## 5 AMEACA DE DESABAMENTO 2020-01-06 00:00:00         IMÓVEL            CONCLUÍDO
-## 6            ALAGAMENTO 2020-01-02 00:00:00         IMÓVEL ENC. SOCIAL E CHEFIA
-##   match
-## 1  TRUE
-## 2 FALSE
-## 3  TRUE
-## 4  TRUE
-## 5  TRUE
-## 6  TRUE</code></pre>
+<table class="table table-condensed">
+<thead>
+<tr>
+<th style="text-align:right;">
+cod_proc
+</th>
+<th style="text-align:right;">
+data_solic
+</th>
+<th style="text-align:right;">
+cod_logra
+</th>
+<th style="text-align:right;">
+desc_logra
+</th>
+<th style="text-align:right;">
+num_imov_solic
+</th>
+<th style="text-align:right;">
+nome_bairro
+</th>
+<th style="text-align:right;">
+desc_pb
+</th>
+<th style="text-align:right;">
+coord_xi_logra
+</th>
+<th style="text-align:right;">
+coord_yi_logra
+</th>
+<th style="text-align:right;">
+ocorr_solic
+</th>
+<th style="text-align:right;">
+desc_orig_solic
+</th>
+<th style="text-align:right;">
+tipo_vist_solic
+</th>
+<th style="text-align:right;">
+ocorr_vist
+</th>
+<th style="text-align:right;">
+data_vist
+</th>
+<th style="text-align:right;">
+tipo_vist_vist
+</th>
+<th style="text-align:right;">
+desc_status
+</th>
+<th style="text-align:right;">
+match
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+100990
+</td>
+<td style="text-align:right;">
+2019-12-31 20:08:38
+</td>
+<td style="text-align:right;">
+9330
+</td>
+<td style="text-align:right;">
+RUA ÁLVARO BAQUEIRO
+</td>
+<td style="text-align:right;">
+6E
+</td>
+<td style="text-align:right;">
+ITAPUA
+</td>
+<td style="text-align:right;">
+ITAPUÃ/IPITANGA
+</td>
+<td style="text-align:right;">
+-38.36292050
+</td>
+<td style="text-align:right;">
+-12.94140110
+</td>
+<td style="text-align:right;">
+ALAGAMENTO
+</td>
+<td style="text-align:right;">
+199 / 156
+</td>
+<td style="text-align:right;">
+IMÓVEL
+</td>
+<td style="text-align:right;">
+ALAGAMENTO
+</td>
+<td style="text-align:right;">
+2020-01-02 12:32:53
+</td>
+<td style="text-align:right;">
+IMÓVEL
+</td>
+<td style="text-align:right;">
+CONCLUÍDO
+</td>
+<td style="text-align:right;">
+TRUE
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+100989
+</td>
+<td style="text-align:right;">
+2019-12-31 19:13:20
+</td>
+<td style="text-align:right;">
+8116
+</td>
+<td style="text-align:right;">
+ESTRADA DO COQUEIRO GRANDE
+</td>
+<td style="text-align:right;">
+7-1ºANDAR
+</td>
+<td style="text-align:right;">
+FAZENDA GRANDE II
+</td>
+<td style="text-align:right;">
+CAJAZEIRAS
+</td>
+<td style="text-align:right;">
+-38.39949100
+</td>
+<td style="text-align:right;">
+-12.90519790
+</td>
+<td style="text-align:right;">
+INFILTRAÇÃO
+</td>
+<td style="text-align:right;">
+199 / 156
+</td>
+<td style="text-align:right;">
+IMÓVEL
+</td>
+<td style="text-align:right;">
+AVALIACAO DA AREA
+</td>
+<td style="text-align:right;">
+2020-01-02 00:00:00
+</td>
+<td style="text-align:right;">
+IMÓVEL
+</td>
+<td style="text-align:right;">
+ENC. SOCIAL
+</td>
+<td style="text-align:right;">
+FALSE
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+99790
+</td>
+<td style="text-align:right;">
+2019-12-31 17:05:54
+</td>
+<td style="text-align:right;">
+9126
+</td>
+<td style="text-align:right;">
+RUA DA ADUTORA
+</td>
+<td style="text-align:right;">
+121-CASA
+</td>
+<td style="text-align:right;">
+SÃO CRISTOVÃO
+</td>
+<td style="text-align:right;">
+ITAPUÃ/IPITANGA
+</td>
+<td style="text-align:right;">
+-38.35523480
+</td>
+<td style="text-align:right;">
+-12.91639220
+</td>
+<td style="text-align:right;">
+ALAGAMENTO
+</td>
+<td style="text-align:right;">
+199 / 156
+</td>
+<td style="text-align:right;">
+IMÓVEL
+</td>
+<td style="text-align:right;">
+ALAGAMENTO
+</td>
+<td style="text-align:right;">
+2020-01-02 00:00:00
+</td>
+<td style="text-align:right;">
+IMÓVEL
+</td>
+<td style="text-align:right;">
+CONCLUÍDO
+</td>
+<td style="text-align:right;">
+TRUE
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+100987
+</td>
+<td style="text-align:right;">
+2019-12-31 16:49:36
+</td>
+<td style="text-align:right;">
+21133
+</td>
+<td style="text-align:right;">
+2ª TRAVESSA BOM PASTOR
+</td>
+<td style="text-align:right;">
+24-CASA
+</td>
+<td style="text-align:right;">
+CAMPINAS DE PIRAJÁ
+</td>
+<td style="text-align:right;">
+LIBERDADE/SAO CAETANO
+</td>
+<td style="text-align:right;">
+-38.47318120
+</td>
+<td style="text-align:right;">
+-12.92414910
+</td>
+<td style="text-align:right;">
+ALAGAMENTO
+</td>
+<td style="text-align:right;">
+199 / 156
+</td>
+<td style="text-align:right;">
+IMÓVEL
+</td>
+<td style="text-align:right;">
+ALAGAMENTO
+</td>
+<td style="text-align:right;">
+2020-01-03 09:41:21
+</td>
+<td style="text-align:right;">
+IMÓVEL
+</td>
+<td style="text-align:right;">
+CONCLUÍDO
+</td>
+<td style="text-align:right;">
+TRUE
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+100986
+</td>
+<td style="text-align:right;">
+2019-12-31 16:36:40
+</td>
+<td style="text-align:right;">
+23359
+</td>
+<td style="text-align:right;">
+RUA OSCAR SEIXAS
+</td>
+<td style="text-align:right;">
+S/N
+</td>
+<td style="text-align:right;">
+PIRAJA
+</td>
+<td style="text-align:right;">
+VALÉRIA
+</td>
+<td style="text-align:right;">
+-38.46944190
+</td>
+<td style="text-align:right;">
+-12.90376450
+</td>
+<td style="text-align:right;">
+AMEACA DE DESABAMENTO
+</td>
+<td style="text-align:right;">
+199 / 156
+</td>
+<td style="text-align:right;">
+IMÓVEL
+</td>
+<td style="text-align:right;">
+AMEACA DE DESABAMENTO
+</td>
+<td style="text-align:right;">
+2020-01-06 00:00:00
+</td>
+<td style="text-align:right;">
+IMÓVEL
+</td>
+<td style="text-align:right;">
+CONCLUÍDO
+</td>
+<td style="text-align:right;">
+TRUE
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+100985
+</td>
+<td style="text-align:right;">
+2019-12-31 16:32:40
+</td>
+<td style="text-align:right;">
+9126
+</td>
+<td style="text-align:right;">
+RUA DA ADUTORA
+</td>
+<td style="text-align:right;">
+7-CASA
+</td>
+<td style="text-align:right;">
+SAO CRISTOVAO
+</td>
+<td style="text-align:right;">
+ITAPUÃ/IPITANGA
+</td>
+<td style="text-align:right;">
+-38.35523480
+</td>
+<td style="text-align:right;">
+-12.91639220
+</td>
+<td style="text-align:right;">
+ALAGAMENTO
+</td>
+<td style="text-align:right;">
+199 / 156
+</td>
+<td style="text-align:right;">
+IMÓVEL
+</td>
+<td style="text-align:right;">
+ALAGAMENTO
+</td>
+<td style="text-align:right;">
+2020-01-02 00:00:00
+</td>
+<td style="text-align:right;">
+IMÓVEL
+</td>
+<td style="text-align:right;">
+ENC. SOCIAL E CHEFIA
+</td>
+<td style="text-align:right;">
+TRUE
+</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <div id="análises" class="section level2">
 <h2>Análises</h2>
 <p>O valor de C para cada ocorrência pode ser obsevado no gráfico a seguir.</p>
 <pre class="r"><code>prop &lt;- sdata %&gt;%  group_by(ocorr_solic) %&gt;% 
-                   summarise(C = mean(match)*100)</code></pre>
-<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
-<pre class="r"><code>ocorr_emerg = c(&quot;DESLIZAMENTO DE TERRA&quot;, &quot;DESABAMENTO DE IMOVEL&quot;, &quot;DESABAMENTO DE MURO&quot;, &quot;EXPLOSAO&quot;,
+                   summarise(C = mean(match)*100)
+
+ocorr_emerg = c(&quot;DESLIZAMENTO DE TERRA&quot;, &quot;DESABAMENTO DE IMOVEL&quot;, &quot;DESABAMENTO DE MURO&quot;, &quot;EXPLOSAO&quot;,
                  &quot;PISTA ROMPIDA&quot;, &quot;ARVORE CAIDA&quot;, &quot;DESABAMENTO PARCIAL&quot;)
 delete &lt;- c(&quot;VAZAMENTO DE GÁS&quot;, &quot;ORIENTAÇÃO TÉCNICA&quot;, &quot;AVALIACAO DA AREA&quot;, &quot;ARMAZENAMENTO DE MATERIAIS PERIGOSOS&quot;, &quot;DESABAMENTO DE BLOCOS DE UMA PEDREIRA&quot; )
 

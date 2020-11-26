@@ -35,7 +35,7 @@ sdata <- pdata %>%  mutate(coerencia = ifelse(ocorr_solic == ocorr_vist, TRUE, F
 proporcao <- sdata %>%  group_by(ocorr_solic) %>% 
             summarise(coerencia = mean(coerencia)*100)
 proporcao <- as.data.frame(proporcao)
-names(proporcao)[2] <- ("C")
+names(proporcao)[2] <- ("Corresp")
 
 proporcao <- proporcao[order(-proporcao$Corresp),]
 proporcao <- proporcao %>% mutate(mais_freq = NA)
@@ -130,4 +130,15 @@ sdata[!(sdata$ocorr_solic %in% delete) & sdata$desc_orig_solic != "SA / 156",] %
   geom_hline(yintercept = 50,  color = "red", linetype = "dashed", size=0.9)+
   geom_vline(xintercept = 2015,  color = "blue", linetype = "dashed", size=0.9)+
   facet_wrap(~ocorr_solic)
+
+### Indicador por dia 
+
+ sdata[sdata$ocorr_solic == "DESLIZAMENTO DE TERRA",] %>% group_by(date(data_solic)) %>% 
+           summarise(c = mean(coerencia)*100) %>% 
+           ggplot() + geom_histogram(aes(x=c)) +
+           labs(title = "Histograma do indicador de correspondência por dia",
+                subtitle = "Apenas para deslizamento de terra",
+                caption = "Período analisado: 07/05/2020 a 31/12/2020.",
+                x = "valor do indicador",
+                y = "Frequência") 
 

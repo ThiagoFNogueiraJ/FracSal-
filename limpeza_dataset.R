@@ -13,8 +13,6 @@ str(sgdc)
 dim(sgdc)
 head(filter(sgdc, desc_status =="PENDENTE"))
 count(sgdc[sgdc$ocorr_solic == "DESLIZAMENTO DE TERRA",], "ocorr_solic")
-
-
 #converte datas da solicitação e de vistoria em formato de datahora
 sgdc$data_proc <- ymd_hms(sgdc$data_proc)
 sgdc$data_vist <- ymd_hms(sgdc$data_vist)
@@ -51,6 +49,9 @@ sgdc <- subset(sgdc, select = -c(data_proc, hora_proc))
 sgdc <- sgdc[, c(3, 17, 1,10 ,2, 11, 12, 8, 9, 4, 5, 6, 7, 13, 14, 15, 16)]
 sgdc <-subset(sgdc, select = -c(desc_tipo_atend))
 
+dim(sgdc)
 #exoirta csv anonimizado
 write.csv(sgdc,"sgdc_anom.csv", row.names = FALSE)
 
+abert_ano <- count(year(sg$data_solic))
+nv
