@@ -3,7 +3,7 @@ install.packages("esquisse")
 install.packages("zoo")
 install.packages("ggridges")
 
-detach(package:corrplot)
+#detach(package:corrplot)
 library(RColorBrewer)
 library(ggrepel)
 library(esquisse)
@@ -59,17 +59,40 @@ for (i in proporcao$ocorr_solic) {
 }
 
 
+ocorr_emerg2 = c("DESLIZAMENTO DE TERRA", "DESABAMENTO DE IMOVEL", "ARVORE CAIDA", "DESABAMENTO PARCIAL")
 #Diagrama 
-corr <- sdata %>% group_by(ocorr_solic, ocorr_vist) %>% 
+prop_3 <- sdata[sdata$ocorr_solic %in% ocorr_emerg2,] %>% group_by(ocorr_solic, ocorr_vist) %>% 
           summarise(n = n()) %>% 
-          mutate(freq = n/sum(n)) %>% 
+          mutate(freq = n/sum(n)*100) %>%
+          arrange(-freq, .by_group = TRUE) %>% 
+          mutate(ocorr_vist = factor(ocorr_vist, levels = ocorr_vist)) %>% 
           select(-c(n)) %>% 
-          pivot_wider(names_from = ocorr_solic, values_from = freq) %>% 
-          mutate_all(replace_na,0) 
-corr
-corrplot(corr, method = "circle")
+          as.data.frame()
 
 
+prop_3 %>% ggplot(aes(x =ocorr_vist, y = freq))+
+           geom_bar(stat = "identity", fill="#f68060")  + facet_wrap(~ocorr_solic, nrow = 1, scales = "free_y") +coord_flip() +
+  theme(legend.position = "none")+
+  theme_grey() #+
+labs(title = "Indicador de correspondência por tipo de ocorrência",
+     subtitle = "Correspondência entre a ocorrência informada na abertura da solicitação e a observada na vistoria!",
+     caption = "Período analisado: 07/05/2020 a 31/12/2020. 
+                                Total de observações: 96051", 
+     x = "Ocorrência",
+     y = "Índice de correspondência (%)") 
+               
+
+prop_3 <- sdata[sdata$ocorr_solic %in% ocorr_emerg2,] %>% group_by(ocorr_solic, ocorr_vist) %>% 
+                summarise(n = n()) %>% 
+                mutate(freq =(n/sum(n))*100) %>% 
+                select(-c(n)) %>% 
+                #mutate(c = fct_reorder(ocorr_vist, freq, .desc = TRUE)) %>% 
+                subset(ocorr_solic != ocorr_vist)
+                
+
+
+
+######
 ocorr_emerg = c("DESLIZAMENTO DE TERRA", "DESABAMENTO DE IMOVEL", "DESABAMENTO DE MURO", "EXPLOSAO",
                  "PISTA ROMPIDA", "ARVORE CAIDA", "DESABAMENTO PARCIAL")
 delete <- c("VAZAMENTO DE GÁS", "ORIENTAÇÃO TÉCNICA", "AVALIACAO DA AREA", "ARMAZENAMENTO DE MATERIAIS PERIGOSOS", "DESABAMENTO DE BLOCOS DE UMA PEDREIRA" )
