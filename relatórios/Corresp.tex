@@ -1,0 +1,551 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Indicador de correspondência},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+
+\title{Indicador de correspondência}
+\author{}
+\date{\vspace{-2.5em}}
+
+\begin{document}
+\maketitle
+
+\hypertarget{apresentauxe7uxe3o}{%
+\subsection{Apresentação}\label{apresentauxe7uxe3o}}
+
+Este relatório apresenta resultados preliminares da amálise exploratória
+dos dados do Sistema de Gestão da Defesa Civil. Propõe-se a criação de
+um novo indicador que pode ser usado para avaliar a confiabilidade dos
+dados estudados bem como a eficiência dos canais de atendimento em triar
+as solicitações que entram no sistema.
+
+O indicador consiste em um número em (\%), representando a fração das
+amastras em que o ocorrência indicada na solicitação (ocorr\_solic) é
+igual à ocorrência observada em campo e registrada pelo técnico no
+momento da vistoria (ocorr\_vist).
+
+\hypertarget{os-dados}{%
+\subsection{Os dados}\label{os-dados}}
+
+Foram utilizados os regisstros do SGDC correspondentes ao período de
+01/07/2004 a 31/12/2019, inicialmente contendo \textbf{147512
+observações e 16 variáveis}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{head}\NormalTok{(pdata)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   cod_proc          data_solic cod_logra                 desc_logra
+## 1   100990 2019-12-31 20:08:38      9330        RUA ÁLVARO BAQUEIRO
+## 2   100989 2019-12-31 19:13:20      8116 ESTRADA DO COQUEIRO GRANDE
+## 3    99790 2019-12-31 17:05:54      9126             RUA DA ADUTORA
+## 4   100987 2019-12-31 16:49:36     21133     2ª TRAVESSA BOM PASTOR
+## 5   100986 2019-12-31 16:36:40     23359           RUA OSCAR SEIXAS
+## 6   100985 2019-12-31 16:32:40      9126             RUA DA ADUTORA
+##   num_imov_solic        nome_bairro               desc_pb coord_xi_logra
+## 1             6E             ITAPUA       ITAPUÃ/IPITANGA   -38.36292050
+## 2      7-1ºANDAR  FAZENDA GRANDE II            CAJAZEIRAS   -38.39949100
+## 3       121-CASA      SÃO CRISTOVÃO       ITAPUÃ/IPITANGA   -38.35523480
+## 4        24-CASA CAMPINAS DE PIRAJÁ LIBERDADE/SAO CAETANO   -38.47318120
+## 5            S/N             PIRAJA               VALÉRIA   -38.46944190
+## 6         7-CASA      SAO CRISTOVAO       ITAPUÃ/IPITANGA   -38.35523480
+##   coord_yi_logra           ocorr_solic desc_orig_solic tipo_vist_solic
+## 1   -12.94140110  ALAGAMENTO DE IMÓVEL       199 / 156          IMÓVEL
+## 2   -12.90519790           INFILTRAÇÃO       199 / 156          IMÓVEL
+## 3   -12.91639220  ALAGAMENTO DE IMÓVEL       199 / 156          IMÓVEL
+## 4   -12.92414910  ALAGAMENTO DE IMÓVEL       199 / 156          IMÓVEL
+## 5   -12.90376450 AMEACA DE DESABAMENTO       199 / 156          IMÓVEL
+## 6   -12.91639220  ALAGAMENTO DE IMÓVEL       199 / 156          IMÓVEL
+##              ocorr_vist           data_vist tipo_vist_vist          desc_status
+## 1  ALAGAMENTO DE IMÓVEL 2020-01-02 12:32:53         IMÓVEL            CONCLUÍDO
+## 2     AVALIACAO DA AREA 2020-01-02 00:00:00         IMÓVEL          ENC. SOCIAL
+## 3  ALAGAMENTO DE IMÓVEL 2020-01-02 00:00:00         IMÓVEL            CONCLUÍDO
+## 4  ALAGAMENTO DE IMÓVEL 2020-01-03 09:41:21         IMÓVEL            CONCLUÍDO
+## 5 AMEACA DE DESABAMENTO 2020-01-06 00:00:00         IMÓVEL            CONCLUÍDO
+## 6  ALAGAMENTO DE IMÓVEL 2020-01-02 00:00:00         IMÓVEL ENC. SOCIAL E CHEFIA
+\end{verbatim}
+
+\hypertarget{filtragem}{%
+\subsubsection{Filtragem}\label{filtragem}}
+
+Para as análises pretendidas, o primeiro requisito é que fossem
+selecionadas apenas as solicitações que foram atendidas e que possuem um
+tipo de ocorrência registrado pelo técnico vistoriados. Assim, foram
+eliminadas as observações de acordo com o valor das variáveis:
+
+Status da solicitação (desc\_status): CANCELADO, BLOQUEADO, PENDENTE,
+NÃO VISUALIZADA e VISTORIA PROGRAMADA. Canal de abertura (orig\_solic):
+ABERTA EM CAMPO, OFÍCIO e OUVIDORIA.
+
+Optou-se por suprimir as solicitações com orig\_solic = \emph{ABERTA EM
+CAMPO} pois, como as solicitações são também abertas no momento da
+vistoria pelo técnico vistoriador, ocorr\_solic e ocorr\_vist devem, por
+regra, serem iguais, o que desbalancearia a amostra. As solicitações
+abertas via \emph{OFÍCIO} e \emph{OUVIDORIA} foram desconsideradas por
+fugirem do escopo de interesse da análise.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{pdata <-}\StringTok{ }\NormalTok{pdata[}\OperatorTok{!}\NormalTok{(pdata}\OperatorTok{$}\NormalTok{desc_status }\OperatorTok{==}\StringTok{ "CANCELADO"}\NormalTok{),]}
+\NormalTok{pdata <-}\StringTok{ }\NormalTok{pdata[}\OperatorTok{!}\NormalTok{(pdata}\OperatorTok{$}\NormalTok{desc_status }\OperatorTok{==}\StringTok{ "BLOQUEADO"}\NormalTok{),]}
+\NormalTok{pdata <-}\StringTok{ }\NormalTok{pdata[}\OperatorTok{!}\NormalTok{(pdata}\OperatorTok{$}\NormalTok{desc_status }\OperatorTok{==}\StringTok{ "PENDENTE"}\NormalTok{),]}
+\NormalTok{pdata <-}\StringTok{ }\NormalTok{pdata[}\OperatorTok{!}\NormalTok{(pdata}\OperatorTok{$}\NormalTok{desc_status }\OperatorTok{==}\StringTok{ "NÃO VISUALIZADA"}\NormalTok{),]}
+\NormalTok{pdata <-}\StringTok{ }\NormalTok{pdata[}\OperatorTok{!}\NormalTok{(pdata}\OperatorTok{$}\NormalTok{desc_status }\OperatorTok{==}\StringTok{ "VISTORIA PROGRAMADA"}\NormalTok{),]}
+\NormalTok{pdata <-}\StringTok{ }\NormalTok{pdata[}\OperatorTok{!}\NormalTok{(pdata}\OperatorTok{$}\NormalTok{desc_orig_solic }\OperatorTok{==}\StringTok{ "ABERTA EM CAMPO"}\NormalTok{),]}
+\NormalTok{pdata <-}\StringTok{ }\NormalTok{pdata[}\OperatorTok{!}\NormalTok{(pdata}\OperatorTok{$}\NormalTok{desc_orig_solic }\OperatorTok{==}\StringTok{ "OFICIO"}\NormalTok{),]}
+\NormalTok{pdata <-}\StringTok{ }\NormalTok{pdata[}\OperatorTok{!}\NormalTok{(pdata}\OperatorTok{$}\NormalTok{desc_orig_solic }\OperatorTok{==}\StringTok{ "OUVIDORIA"}\NormalTok{),]}
+\NormalTok{pdata <-}\StringTok{ }\NormalTok{pdata[}\OperatorTok{!}\NormalTok{(pdata}\OperatorTok{$}\NormalTok{ocorr_vist }\OperatorTok{==}\StringTok{ "NULL"}\NormalTok{),]}
+\end{Highlighting}
+\end{Shaded}
+
+Também para facilitar a análise, as ocorrências \emph{AVLIAÇÃO DE IMÓVEL
+ALAGADO}, \emph{ALAGAMENTO DE IMÓVEL} e \emph{ALAGAMENTO DE IMÓVE} foram
+sintetizadas em um único tipo \emph{ALAGAMENTO}.
+
+\hypertarget{modelagem}{%
+\subsubsection{Modelagem}\label{modelagem}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{alagamentos <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"AVALIAÇÃO DE IMÓVEL ALAGADO"}\NormalTok{, }\StringTok{"ALAGAMENTO DE IMÓVEL"}\NormalTok{, }\StringTok{"ALAGAMENTO DE ÁREA"}\NormalTok{)}
+\NormalTok{pdata}\OperatorTok{$}\NormalTok{ocorr_solic <-}\StringTok{ }\KeywordTok{ifelse}\NormalTok{(pdata}\OperatorTok{$}\NormalTok{ocorr_solic }\OperatorTok{%in%}\StringTok{ }\NormalTok{alagamentos, }\StringTok{"ALAGAMENTO"}\NormalTok{, pdata}\OperatorTok{$}\NormalTok{ocorr_solic)}
+\NormalTok{pdata}\OperatorTok{$}\NormalTok{ocorr_vist <-}\StringTok{ }\KeywordTok{ifelse}\NormalTok{(pdata}\OperatorTok{$}\NormalTok{ocorr_vist }\OperatorTok{%in%}\StringTok{ }\NormalTok{alagamentos, }\StringTok{"ALAGAMENTO"}\NormalTok{, pdata}\OperatorTok{$}\NormalTok{ocorr_vist)}
+\end{Highlighting}
+\end{Shaded}
+
+Por fim, criamos uma nova coluna no dataset, que deverá ter valor
+VERDADEIRO ( \emph{TRUE} ) se a ocorrência indicada na solicitação e a
+observada na vistoria coincidirem e FALSO ( \emph{FALSE} ) caso sejam
+diferentes.
+
+O conjunto de dados final contem 90.046 observações e 17 variáveis.
+
+\begin{verbatim}
+##   cod_proc          data_solic cod_logra                 desc_logra
+## 1   100990 2019-12-31 20:08:38      9330        RUA ÁLVARO BAQUEIRO
+## 2   100989 2019-12-31 19:13:20      8116 ESTRADA DO COQUEIRO GRANDE
+## 3    99790 2019-12-31 17:05:54      9126             RUA DA ADUTORA
+## 4   100987 2019-12-31 16:49:36     21133     2ª TRAVESSA BOM PASTOR
+## 5   100986 2019-12-31 16:36:40     23359           RUA OSCAR SEIXAS
+## 6   100985 2019-12-31 16:32:40      9126             RUA DA ADUTORA
+##   num_imov_solic        nome_bairro               desc_pb coord_xi_logra
+## 1             6E             ITAPUA       ITAPUÃ/IPITANGA   -38.36292050
+## 2      7-1ºANDAR  FAZENDA GRANDE II            CAJAZEIRAS   -38.39949100
+## 3       121-CASA      SÃO CRISTOVÃO       ITAPUÃ/IPITANGA   -38.35523480
+## 4        24-CASA CAMPINAS DE PIRAJÁ LIBERDADE/SAO CAETANO   -38.47318120
+## 5            S/N             PIRAJA               VALÉRIA   -38.46944190
+## 6         7-CASA      SAO CRISTOVAO       ITAPUÃ/IPITANGA   -38.35523480
+##   coord_yi_logra           ocorr_solic desc_orig_solic tipo_vist_solic
+## 1   -12.94140110            ALAGAMENTO       199 / 156          IMÓVEL
+## 2   -12.90519790           INFILTRAÇÃO       199 / 156          IMÓVEL
+## 3   -12.91639220            ALAGAMENTO       199 / 156          IMÓVEL
+## 4   -12.92414910            ALAGAMENTO       199 / 156          IMÓVEL
+## 5   -12.90376450 AMEACA DE DESABAMENTO       199 / 156          IMÓVEL
+## 6   -12.91639220            ALAGAMENTO       199 / 156          IMÓVEL
+##              ocorr_vist           data_vist tipo_vist_vist          desc_status
+## 1            ALAGAMENTO 2020-01-02 12:32:53         IMÓVEL            CONCLUÍDO
+## 2     AVALIACAO DA AREA 2020-01-02 00:00:00         IMÓVEL          ENC. SOCIAL
+## 3            ALAGAMENTO 2020-01-02 00:00:00         IMÓVEL            CONCLUÍDO
+## 4            ALAGAMENTO 2020-01-03 09:41:21         IMÓVEL            CONCLUÍDO
+## 5 AMEACA DE DESABAMENTO 2020-01-06 00:00:00         IMÓVEL            CONCLUÍDO
+## 6            ALAGAMENTO 2020-01-02 00:00:00         IMÓVEL ENC. SOCIAL E CHEFIA
+##   match
+## 1  TRUE
+## 2 FALSE
+## 3  TRUE
+## 4  TRUE
+## 5  TRUE
+## 6  TRUE
+\end{verbatim}
+
+\hypertarget{anuxe1lises}{%
+\subsection{Análises}\label{anuxe1lises}}
+
+\hypertarget{univariada}{%
+\subsubsection{Univariada}\label{univariada}}
+
+O valor de C para cada ocorrência pode ser obsevado no gráfico a seguir.
+Observa-se que quatro ocorrências críticas, que exigem uma resposta
+imediata da Defesa Civil e demais órgãos do SMPDC, mostram valores entre
+50\% e 60\%, enquanto outras três do tipo ficam abaixo dos 40\%. Podemos
+dizer a partir daí que uma solicitação aberta como \textbf{deslizamento
+de terra} tem uma chance aproximada de 50\% de \textbf{não} ser um
+deslizamento de terra real, as mesmas chances de tirar um ``cara'' ao
+lançar uma moeda.
+
+\includegraphics{Corresp_files/figure-latex/unnamed-chunk-6-1.pdf} É
+possível também, a partir desta primeira análise, investigar quais são
+as situações reais observadas pelo técnico em campo quando, não são as
+ocorrências indicadas no momento da abertura do chamado. Abaixo, temos a
+tabela com essas informações para as ocorrências destacadas no gráfico
+anterior.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{prop_}\DecValTok{3}\NormalTok{ <-}\StringTok{ }\NormalTok{sdata[sdata}\OperatorTok{$}\NormalTok{ocorr_solic }\OperatorTok{%in%}\StringTok{ }\NormalTok{ocorr_emerg,] }\OperatorTok{%>%}\StringTok{ }\KeywordTok{group_by}\NormalTok{(ocorr_solic, ocorr_vist) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{          }\KeywordTok{summarise}\NormalTok{(}\DataTypeTok{n =} \KeywordTok{n}\NormalTok{()) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{          }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{freq =}\NormalTok{ n}\OperatorTok{/}\KeywordTok{sum}\NormalTok{(n)}\OperatorTok{*}\DecValTok{100}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{          }\KeywordTok{arrange}\NormalTok{(}\OperatorTok{-}\NormalTok{freq, }\DataTypeTok{.by_group =} \OtherTok{TRUE}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{          }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{ocorr_vist =} \KeywordTok{factor}\NormalTok{(ocorr_vist, }\DataTypeTok{levels =}\NormalTok{ ocorr_vist)) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{          }\KeywordTok{select}\NormalTok{(}\OperatorTok{-}\KeywordTok{c}\NormalTok{(n)) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{          }\KeywordTok{as.data.frame}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## `summarise()` regrouping output by 'ocorr_solic' (override with `.groups` argument)
+\end{verbatim}
+
+Calculando essa tabela para \emph{ORITENTAÇÃO TÉCNCIA}, um tipo de
+ocorrência coringa dentro do sistema, selecionado quando a ocorrência
+observada não se encaixa em nenhuma das tipologias disponíveis,
+observamos que aproximadamente 1/4 das solicitações são indicadas
+posteriormente pelo técnico como \emph{AMEAÇA DE DESABAMENTO}. A maior
+parte é classidicada tanbém como \emph{ORIENTAÇÃO TÉCNICA}, o que abre
+espaço para novas análises mais aprofundadas para verificar, talvez a
+partir das intervenções indicadas, se são atendimentos que fogem do
+escopo da Defesa Civil, ou mesmo identificar novas tipologias a serem
+inseridas na lista de ocorrências.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sdata[sdata}\OperatorTok{$}\NormalTok{ocorr_solic }\OperatorTok{==}\StringTok{ "ORIENTAÇÃO TÉCNICA"}\NormalTok{,] }\OperatorTok{%>%}\StringTok{ }\KeywordTok{group_by}\NormalTok{(ocorr_vist) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{          }\KeywordTok{summarise}\NormalTok{(}\DataTypeTok{n =} \KeywordTok{n}\NormalTok{()) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{          }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{freq =}\NormalTok{ n}\OperatorTok{/}\KeywordTok{sum}\NormalTok{(n)}\OperatorTok{*}\DecValTok{100}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{          }\KeywordTok{arrange}\NormalTok{(}\OperatorTok{-}\NormalTok{freq)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## `summarise()` ungrouping output (override with `.groups` argument)
+\end{verbatim}
+
+\begin{verbatim}
+## # A tibble: 19 x 3
+##    ocorr_vist                               n    freq
+##    <chr>                                <int>   <dbl>
+##  1 ORIENTAÇÃO TÉCNICA                    1715 54.7   
+##  2 AMEACA DE DESABAMENTO                  762 24.3   
+##  3 AMEACA DE DESLIZAMENTO                 190  6.05  
+##  4 INFILTRAÇÃO                            161  5.13  
+##  5 ALAGAMENTO                             102  3.25  
+##  6 DESLIZAMENTO DE TERRA                   35  1.12  
+##  7 AVALIACAO DA AREA                       31  0.988 
+##  8 DESABAMENTO DE IMOVEL                   29  0.924 
+##  9 AMEACA DE DESABAMENTO DE MURO           26  0.829 
+## 10 INCENDIO                                24  0.765 
+## 11 DESABAMENTO PARCIAL                     15  0.478 
+## 12 ARVORE AMEACANDO CAIR                   14  0.446 
+## 13 DESABAMENTO DE MURO                     13  0.414 
+## 14 PISTA ROMPIDA                           12  0.382 
+## 15 DESTELHAMENTO                            4  0.127 
+## 16 POSTE AMEAÇANDO CAIR                     2  0.0637
+## 17 ARMAZENAMENTO DE MATERIAIS PERIGOSOS     1  0.0319
+## 18 ARVORE CAIDA                             1  0.0319
+## 19 GALHO DE ÁRVORE CAÍDO                    1  0.0319
+\end{verbatim}
+
+\hypertarget{multivariada}{%
+\subsubsection{Multivariada}\label{multivariada}}
+
+Nesta seção dispomos as observações feitas a partir do cruzamento do
+Indicador (C) com outras variáveis, como canal de ocorrência, data de
+abertura do chamado e local.
+
+\hypertarget{qauntidade-de-solicitauxe7uxf5es-e-data-de-abertura}{%
+\paragraph{Qauntidade de solicitações e data de
+abertura}\label{qauntidade-de-solicitauxe7uxf5es-e-data-de-abertura}}
+
+Para deslizamentos de terra, a variação de C reduz à medida que o número
+de solicitações aumenta. Na prática, significa que em dias com muitos
+chamados de deslizamentos de terra, aqui estudamos um número base de 100
+solicitações, o valor de C estabilizia entre 50\% e 60\%.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{os_dt =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"DESLIZAMENTO DE TERRA"}\NormalTok{, }\StringTok{"AMEACA DE DESLIZAMENTO"}\NormalTok{)}
+\NormalTok{os_db =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"DESABAMENTO DE IMOVEL"}\NormalTok{, }\StringTok{"AMEACA DE DESABAMENTO"}\NormalTok{)}
+
+\NormalTok{sdata[sdata}\OperatorTok{$}\NormalTok{ocorr_solic }\OperatorTok{%in%}\StringTok{ }\NormalTok{os_dt,] }\OperatorTok{%>%}\StringTok{ }\KeywordTok{group_by}\NormalTok{(}\KeywordTok{year}\NormalTok{(data_solic), }\KeywordTok{date}\NormalTok{(data_solic), ocorr_solic) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{                                          }\KeywordTok{summarise}\NormalTok{(}\DataTypeTok{n_solic =} \KeywordTok{n}\NormalTok{(), }\DataTypeTok{C =} \KeywordTok{mean}\NormalTok{(match)) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{                                          }\KeywordTok{filter}\NormalTok{(n_solic }\OperatorTok{>=}\StringTok{ }\DecValTok{0}\NormalTok{, }\StringTok{`}\DataTypeTok{year(data_solic)}\StringTok{`} \OperatorTok{>=}\StringTok{ }\DecValTok{2005}\NormalTok{, ocorr_solic}\OperatorTok{==}\StringTok{"DESLIZAMENTO DE TERRA"}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{                                          }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{n_solic, }\DataTypeTok{y=}\NormalTok{C, }\DataTypeTok{group =}\NormalTok{ ocorr_solic)) }\OperatorTok{+}\StringTok{ }\KeywordTok{geom_point}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{fill=}\NormalTok{ocorr_solic)) }\OperatorTok{+}\StringTok{ }\KeywordTok{coord_cartesian}\NormalTok{(}\DataTypeTok{ylim =} \KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{1}\NormalTok{))}\OperatorTok{+}
+\StringTok{                                          }\KeywordTok{stat_smooth}\NormalTok{(}\DataTypeTok{method =} \StringTok{"lm"}\NormalTok{, }\DataTypeTok{col =} \StringTok{"red"}\NormalTok{)}\OperatorTok{+}\StringTok{ }\CommentTok{#facet_wrap(~ocorr_solic)+ }
+\StringTok{                                          }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{title =} \StringTok{"Gráfico de dispersão: número de solicitações (n_solic) x indicador (C)"}\NormalTok{,}
+                                                \DataTypeTok{subtitle =} \StringTok{"Deslizamentos de terra. n de corte = 100"}\NormalTok{, }\DataTypeTok{x =} \StringTok{"número de solicitações"}\NormalTok{, }\DataTypeTok{y =} \StringTok{"indicador"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## `summarise()` regrouping output by 'year(data_solic)', 'date(data_solic)' (override with `.groups` argument)
+\end{verbatim}
+
+\begin{verbatim}
+## `geom_smooth()` using formula 'y ~ x'
+\end{verbatim}
+
+\includegraphics{Corresp_files/figure-latex/unnamed-chunk-9-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sdata[sdata}\OperatorTok{$}\NormalTok{ocorr_solic }\OperatorTok{%in%}\StringTok{ }\NormalTok{os_dt,] }\OperatorTok{%>%}\StringTok{ }\KeywordTok{group_by}\NormalTok{(}\KeywordTok{year}\NormalTok{(data_solic), }\KeywordTok{date}\NormalTok{(data_solic), ocorr_solic) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{                                          }\KeywordTok{summarise}\NormalTok{(}\DataTypeTok{n_solic =} \KeywordTok{n}\NormalTok{(), }\DataTypeTok{C =} \KeywordTok{mean}\NormalTok{(match)) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{                                          }\KeywordTok{filter}\NormalTok{(n_solic }\OperatorTok{>=}\StringTok{ }\DecValTok{10}\NormalTok{, }\StringTok{`}\DataTypeTok{year(data_solic)}\StringTok{`} \OperatorTok{>=}\StringTok{ }\DecValTok{2005}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{                                          }\KeywordTok{ggplot}\NormalTok{() }\OperatorTok{+}\StringTok{ }\KeywordTok{geom_histogram}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{C))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## `summarise()` regrouping output by 'year(data_solic)', 'date(data_solic)' (override with `.groups` argument)
+\end{verbatim}
+
+\begin{verbatim}
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+\end{verbatim}
+
+\includegraphics{Corresp_files/figure-latex/unnamed-chunk-9-2.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{dt <-}\StringTok{ }\NormalTok{sdata[sdata}\OperatorTok{$}\NormalTok{ocorr_solic }\OperatorTok{%in%}\StringTok{ }\NormalTok{os_dt,] }\OperatorTok{%>%}\StringTok{ }\KeywordTok{group_by}\NormalTok{(}\KeywordTok{year}\NormalTok{(data_solic), }\KeywordTok{date}\NormalTok{(data_solic), ocorr_solic) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{                                          }\KeywordTok{summarise}\NormalTok{(}\DataTypeTok{n_solic =} \KeywordTok{n}\NormalTok{(), }\DataTypeTok{C =} \KeywordTok{mean}\NormalTok{(match)) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{                                          }\KeywordTok{filter}\NormalTok{(n_solic }\OperatorTok{>=}\StringTok{ }\DecValTok{100}\NormalTok{, }\StringTok{`}\DataTypeTok{year(data_solic)}\StringTok{`} \OperatorTok{>=}\StringTok{ }\DecValTok{2005}\NormalTok{, ocorr_solic }\OperatorTok{==}\StringTok{ "DESLIZAMENTO DE TERRA"}\NormalTok{) }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## `summarise()` regrouping output by 'year(data_solic)', 'date(data_solic)' (override with `.groups` argument)
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{cor}\NormalTok{(dt}\OperatorTok{$}\NormalTok{n_solic, dt}\OperatorTok{$}\NormalTok{C,  }\DataTypeTok{method =} \KeywordTok{c}\NormalTok{(}\StringTok{"pearson"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.490569
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sdata[sdata}\OperatorTok{$}\NormalTok{ocorr_solic }\OperatorTok{%in%}\StringTok{ }\NormalTok{os_dt,] }\OperatorTok{%>%}\StringTok{ }\KeywordTok{group_by}\NormalTok{(}\KeywordTok{year}\NormalTok{(data_solic), }\KeywordTok{date}\NormalTok{(data_solic), ocorr_solic) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{                                          }\KeywordTok{summarise}\NormalTok{(}\DataTypeTok{n_solic =} \KeywordTok{n}\NormalTok{(), }\DataTypeTok{C =} \KeywordTok{mean}\NormalTok{(match)) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{                                          }\KeywordTok{filter}\NormalTok{(n_solic }\OperatorTok{>=}\StringTok{ }\DecValTok{0}\NormalTok{, }\StringTok{`}\DataTypeTok{year(data_solic)}\StringTok{`} \OperatorTok{>=}\StringTok{ }\DecValTok{2005}\NormalTok{, ocorr_solic}\OperatorTok{==}\StringTok{"DESLIZAMENTO DE TERRA"}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{                                          }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{n_solic, }\DataTypeTok{y=}\NormalTok{C, }\DataTypeTok{group =}\NormalTok{ ocorr_solic)) }\OperatorTok{+}\StringTok{ }\KeywordTok{geom_point}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{fill=}\NormalTok{ocorr_solic)) }\OperatorTok{+}\StringTok{ }\KeywordTok{coord_cartesian}\NormalTok{(}\DataTypeTok{ylim =} \KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{1}\NormalTok{))}\OperatorTok{+}
+\StringTok{                                          }\CommentTok{#stat_smooth(method = "lm", col = "red")+}
+\StringTok{                                          }\CommentTok{#facet_wrap(~`year(data_solic)`)+ }
+\StringTok{                                          }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{title =} \StringTok{"Gráfico de dispersão: número de solicitações (n_solic) x indicador (C)"}\NormalTok{,}
+                                                \DataTypeTok{subtitle =} \StringTok{"Deslizamentos de terra. n de corte = 100"}\NormalTok{, }\DataTypeTok{x =} \StringTok{"número de solicitações"}\NormalTok{, }\DataTypeTok{y =} \StringTok{"indicador"}\NormalTok{)}\OperatorTok{+}
+\StringTok{                                          }\KeywordTok{transition_reveal}\NormalTok{(}\StringTok{`}\DataTypeTok{year(data_solic)}\StringTok{`}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## `summarise()` regrouping output by 'year(data_solic)', 'date(data_solic)' (override with `.groups` argument)
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: No renderer available. Please install the gifski, av, or magick package
+## to create animated output
+\end{verbatim}
+
+\hypertarget{canal-de-abertura}{%
+\paragraph{Canal de abertura}\label{canal-de-abertura}}
+
+Estudar a variação de (C) de acordo com a forma como as solicitações
+entram no sistema pode nos dar uma dimensão da qualidade da triagem
+feita pelos canais de atendimento. Espera-se que o atendente seja capaz
+de ouvir o relato do cidadão e registrá-lo no sistema de forma concisa,
+captando os detalhes cruciais e fornecendo aos setores responsáveis pelo
+roteiro de vistoria informções confiáveis para definir a prioridade de
+atendimento pelo órgão.
+
+Para as análises a seguir, serão consideradas as ocorrências de
+\emph{AMEAÇA DE DESLIZAMENTO} e \emph{DESLIZAMENTO DE TERRA}, dada a sua
+relevância na rotina do órgão e sua homogeneidade durante o periíodo
+analisado.
+
+Sob essa perspectiva, analisamos a primeira hipótese, que é um senso
+comum dentro da CODESAL: \emph{``Desde que saiu da sede do órgão, em
+2015, a qualidade do atendimento 199 caiu''}. Essa afirmação parte da
+premissa que, enquanto na sede, os atendentes do 199 poderiam ser melhor
+orientados pelos técnicos, podendo tirar dúvidas e recebendo correções
+de imediato. Além disso, agora que estão trabalhando no formato de Call
+Center, os atendentes recbem chamados não só do 199 mas também do
+telefone da Ouvidoria Geral do Município. É rezoável considerar, então,
+que o atendimento presencial da CODESAL, aqui entitulado
+\emph{PESSOALMENTE} deve apresentar um valor de C no mínimo maior que o
+valor para os atendimentos feitos pelo 199.
+
+Contudo, o que observamos nos gráficos abaixo nega a hipótese: além de
+não podermos dizer que houve uma queda de C para o 199 a partir de 2015,
+para deslizamentos de terra o 199 é mais acertivo que o atendimento
+presencial
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sdata[sdata}\OperatorTok{$}\NormalTok{ocorr_solic }\OperatorTok{%in%}\StringTok{ }\NormalTok{os_dt }\OperatorTok{&}\StringTok{ }\NormalTok{sdata}\OperatorTok{$}\NormalTok{desc_orig_solic }\OperatorTok{%in%}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"199"}\NormalTok{, }\StringTok{"PESSOALMENTE"}\NormalTok{),] }\OperatorTok{%>%}\StringTok{ }\KeywordTok{group_by}\NormalTok{(}\KeywordTok{year}\NormalTok{(data_solic), desc_orig_solic) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{                                         }\KeywordTok{summarise}\NormalTok{(}\DataTypeTok{n =} \KeywordTok{mean}\NormalTok{(match)}\OperatorTok{*}\DecValTok{100}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{                                         }\KeywordTok{ggplot}\NormalTok{() }\OperatorTok{+}\StringTok{ }\KeywordTok{geom_line}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =} \StringTok{`}\DataTypeTok{year(data_solic)}\StringTok{`}\NormalTok{, }\DataTypeTok{y =}\NormalTok{ n, }\DataTypeTok{colour =} \KeywordTok{as.factor}\NormalTok{(desc_orig_solic)), }\DataTypeTok{size =} \FloatTok{1.2}\NormalTok{) }\OperatorTok{+}\StringTok{                      }
+\StringTok{                                          }\KeywordTok{coord_cartesian}\NormalTok{(}\DataTypeTok{xlim =}\KeywordTok{c}\NormalTok{(}\DecValTok{2005}\NormalTok{, }\DecValTok{2019}\NormalTok{), }\DataTypeTok{ylim =} \KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{100}\NormalTok{)) }\OperatorTok{+}\StringTok{   }
+\StringTok{                                         }\KeywordTok{scale_x_continuous}\NormalTok{(}\DataTypeTok{breaks =} \KeywordTok{seq}\NormalTok{(}\DecValTok{2005}\NormalTok{,}\DecValTok{2019}\NormalTok{, }\DecValTok{2}\NormalTok{))}\OperatorTok{+}
+\StringTok{                                         }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{legend.position =} \StringTok{"bottom"}\NormalTok{, }\DataTypeTok{legend.box =} \StringTok{"horizontal"}\NormalTok{)}\OperatorTok{+}
+\StringTok{                                          }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{title =} \StringTok{"Indicador de verdadeiro-positivo (C) por canal de atendimento"}\NormalTok{,}
+                                              \DataTypeTok{caption =} \StringTok{"Período analisado: 07/05/2020 a 31/12/2019"}\NormalTok{, }
+                                              \DataTypeTok{x =} \StringTok{"Ano"}\NormalTok{,}
+                                              \DataTypeTok{y =} \StringTok{"C"}\NormalTok{,}
+                                              \DataTypeTok{colour =} \StringTok{"Canal de aberura"}\NormalTok{) }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## `summarise()` regrouping output by 'year(data_solic)' (override with `.groups` argument)
+\end{verbatim}
+
+\includegraphics{Corresp_files/figure-latex/unnamed-chunk-10-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sdata[sdata}\OperatorTok{$}\NormalTok{ocorr_solic }\OperatorTok{%in%}\StringTok{ }\NormalTok{os_dt }\OperatorTok{&}\StringTok{ }\NormalTok{sdata}\OperatorTok{$}\NormalTok{desc_orig_solic }\OperatorTok{%in%}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"199"}\NormalTok{, }\StringTok{"PESSOALMENTE"}\NormalTok{),] }\OperatorTok{%>%}\StringTok{ }\KeywordTok{group_by}\NormalTok{(}\KeywordTok{year}\NormalTok{(data_solic), ocorr_solic, desc_orig_solic) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{                                         }\KeywordTok{summarise}\NormalTok{(}\DataTypeTok{n =} \KeywordTok{mean}\NormalTok{(match)}\OperatorTok{*}\DecValTok{100}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{                                         }\KeywordTok{ggplot}\NormalTok{() }\OperatorTok{+}\StringTok{ }\KeywordTok{geom_line}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =} \StringTok{`}\DataTypeTok{year(data_solic)}\StringTok{`}\NormalTok{, }\DataTypeTok{y =}\NormalTok{ n, }\DataTypeTok{colour =} \KeywordTok{as.factor}\NormalTok{(ocorr_solic)), }\DataTypeTok{size =} \FloatTok{1.2}\NormalTok{) }\OperatorTok{+}\StringTok{                                                                 }\CommentTok{#facet_wrap(~desc_orig_solic) +}
+\StringTok{                                          }\KeywordTok{coord_cartesian}\NormalTok{(}\DataTypeTok{xlim =}\KeywordTok{c}\NormalTok{(}\DecValTok{2005}\NormalTok{, }\DecValTok{2019}\NormalTok{), }\DataTypeTok{ylim =} \KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{100}\NormalTok{)) }\OperatorTok{+}\StringTok{   }
+\StringTok{                                         }\KeywordTok{scale_x_continuous}\NormalTok{(}\DataTypeTok{breaks =} \KeywordTok{seq}\NormalTok{(}\DecValTok{2005}\NormalTok{,}\DecValTok{2019}\NormalTok{, }\DecValTok{2}\NormalTok{))}\OperatorTok{+}
+\StringTok{                                         }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{legend.position =} \StringTok{"bottom"}\NormalTok{, }\DataTypeTok{legend.box =} \StringTok{"horizontal"}\NormalTok{)}\OperatorTok{+}
+\StringTok{                                          }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{title =} \StringTok{"Indicador de verdadeiro-positivo (C) por canal de atendimento"}\NormalTok{,}
+                                              \DataTypeTok{caption =} \StringTok{"Período analisado: 07/05/2020 a 31/12/2019"}\NormalTok{, }
+                                              \DataTypeTok{x =} \StringTok{"Ano"}\NormalTok{,}
+                                              \DataTypeTok{y =} \StringTok{"C"}\NormalTok{,}
+                                              \DataTypeTok{colour =} \StringTok{"Canal de aberura"}\NormalTok{) }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## `summarise()` regrouping output by 'year(data_solic)', 'ocorr_solic' (override with `.groups` argument)
+\end{verbatim}
+
+\includegraphics{Corresp_files/figure-latex/unnamed-chunk-10-2.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sdata[sdata}\OperatorTok{$}\NormalTok{ocorr_solic }\OperatorTok{==}\StringTok{ "ALAGAMENTO"} \OperatorTok{&}\StringTok{ }\NormalTok{sdata}\OperatorTok{$}\NormalTok{desc_orig_solic }\OperatorTok{%in%}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"199"}\NormalTok{, }\StringTok{"PESSOALMENTE"}\NormalTok{),] }\OperatorTok{%>%}\StringTok{ }\KeywordTok{group_by}\NormalTok{(}\KeywordTok{year}\NormalTok{(data_solic), desc_orig_solic) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{                                         }\KeywordTok{summarise}\NormalTok{(}\DataTypeTok{n =} \KeywordTok{mean}\NormalTok{(match)}\OperatorTok{*}\DecValTok{100}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{                                         }\KeywordTok{ggplot}\NormalTok{() }\OperatorTok{+}\StringTok{ }\KeywordTok{geom_line}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =} \StringTok{`}\DataTypeTok{year(data_solic)}\StringTok{`}\NormalTok{, }\DataTypeTok{y =}\NormalTok{ n, }\DataTypeTok{colour =} \KeywordTok{as.factor}\NormalTok{(desc_orig_solic)), }\DataTypeTok{size =} \FloatTok{1.2}\NormalTok{) }\OperatorTok{+}\StringTok{                      }
+\StringTok{                                          }\KeywordTok{coord_cartesian}\NormalTok{(}\DataTypeTok{xlim =}\KeywordTok{c}\NormalTok{(}\DecValTok{2005}\NormalTok{, }\DecValTok{2019}\NormalTok{), }\DataTypeTok{ylim =} \KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{100}\NormalTok{)) }\OperatorTok{+}\StringTok{   }
+\StringTok{                                         }\KeywordTok{scale_x_continuous}\NormalTok{(}\DataTypeTok{breaks =} \KeywordTok{seq}\NormalTok{(}\DecValTok{2005}\NormalTok{,}\DecValTok{2019}\NormalTok{, }\DecValTok{2}\NormalTok{))}\OperatorTok{+}
+\StringTok{                                         }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{legend.position =} \StringTok{"bottom"}\NormalTok{, }\DataTypeTok{legend.box =} \StringTok{"horizontal"}\NormalTok{)}\OperatorTok{+}
+\StringTok{                                          }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{title =} \StringTok{"Indicador de verdadeiro-positivo (C) por canal de atendimento"}\NormalTok{,}
+                                              \DataTypeTok{caption =} \StringTok{"Período analisado: 07/05/2020 a 31/12/2019"}\NormalTok{, }
+                                              \DataTypeTok{x =} \StringTok{"Ano"}\NormalTok{,}
+                                              \DataTypeTok{y =} \StringTok{"C"}\NormalTok{,}
+                                              \DataTypeTok{colour =} \StringTok{"Canal de aberura"}\NormalTok{) }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## `summarise()` regrouping output by 'year(data_solic)' (override with `.groups` argument)
+\end{verbatim}
+
+\includegraphics{Corresp_files/figure-latex/unnamed-chunk-10-3.pdf}
+
+\end{document}

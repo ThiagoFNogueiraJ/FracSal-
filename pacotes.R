@@ -13,7 +13,7 @@ install.packages("forcats")
 install.packages("tidyverse")
 install.packages("formattable")
 install.packages("corrplot")
-
+install.packages("gifski")
 
 require(scales)
 library(ggplot2)
