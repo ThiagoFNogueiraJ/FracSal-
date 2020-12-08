@@ -3,3 +3,5 @@
 [1201/112910.676:ERROR:exit_code_watcher_win.cc(87)] Failed to wait for process exit or stop event
 [1201/112910.762:ERROR:registration_protocol_win.cc(130)] TransactNamedPipe: O pipe foi finalizado. (0x6D)
 [1201/115809.930:ERROR:registration_protocol_win.cc(130)] TransactNamedPipe: O pipe foi finalizado. (0x6D)
+[1203/113810.916:ERROR:registration_protocol_win.cc(130)] TransactNamedPipe: O pipe foi finalizado. (0x6D)
+[1208/114758.638:ERROR:registration_protocol_win.cc(130)] TransactNamedPipe: O pipe foi finalizado. (0x6D)

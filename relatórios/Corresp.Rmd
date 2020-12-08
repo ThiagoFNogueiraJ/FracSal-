@@ -18,6 +18,7 @@ library(forcats)
 library(tidyverse)
 library(gganimate)
 library(gifski)
+library(ggpubr)
 ```
 
 
@@ -118,7 +119,7 @@ prop_2 %>%      ggplot() + geom_bar(aes(x = name, y= C, fill = resp), stat = "id
 ```
 É possível também, a partir desta primeira análise, investigar quais são as situações reais observadas pelo técnico em campo quando, não são as ocorrências indicadas no momento da abertura do chamado. Abaixo, temos a tabela com essas informações para as ocorrências destacadas no gráfico anterior. 
 
-```{r}
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
 
 prop_3 <- sdata[sdata$ocorr_solic %in% ocorr_emerg,] %>% group_by(ocorr_solic, ocorr_vist) %>% 
           summarise(n = n()) %>% 
@@ -132,7 +133,7 @@ prop_3 <- sdata[sdata$ocorr_solic %in% ocorr_emerg,] %>% group_by(ocorr_solic, o
 ```
 Calculando essa tabela para _ORITENTAÇÃO TÉCNCIA_, um tipo de ocorrência coringa dentro do sistema, selecionado quando a ocorrência observada não se encaixa em nenhuma das tipologias disponíveis, observamos que aproximadamente 1/4 das solicitações são indicadas posteriormente pelo técnico como _AMEAÇA DE DESABAMENTO_. A maior parte é classidicada tanbém como _ORIENTAÇÃO TÉCNICA_, o que abre espaço para novas análises mais aprofundadas para verificar, talvez a partir das intervenções indicadas, se são atendimentos que fogem do escopo da Defesa Civil, ou mesmo identificar novas tipologias a serem inseridas na lista de ocorrências. 
 
-```{r}
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
 
 sdata[sdata$ocorr_solic == "ORIENTAÇÃO TÉCNICA",] %>% group_by(ocorr_vist) %>% 
           summarise(n = n()) %>% 
@@ -148,9 +149,12 @@ Nesta seção dispomos as observações feitas a partir do cruzamento do Indicad
 
 #### Qauntidade de solicitações e data de abertura
 
+Buscando investigar se o número de solicitações que entram por dia interfete no Valor de C, traçamos um gráfico de dispersão relacionado ambas as variáveis para _DESLIZAMENTO DE TERRA_. 
 
+Observamos inicialmente que dias com menos que 10 solicitações apresentam uma variação muito grande e não indicam quaisquer tendência. Contudo, quando consideramos os dias com mais de 100 solicitações, é possível identificar uma correlação positiva: dias com muitas solicitações tendem a ter um valor de C maior. 
+Usando o coeficiente de correlação linear de Pearson para quantificar essa correlação, obtemos **r = 0.490569**, indicador que existe uma relação positiva de média intensidade entre as duas variáveis. O p-valor = 0.002772 < 0.05 indica que esta é uma estatísitca significativa.  
 
-```{r}
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
 
 os_dt = c("DESLIZAMENTO DE TERRA", "AMEACA DE DESLIZAMENTO")
 os_db = c("DESABAMENTO DE IMOVEL", "AMEACA DE DESABAMENTO")
@@ -158,30 +162,22 @@ os_db = c("DESABAMENTO DE IMOVEL", "AMEACA DE DESABAMENTO")
 
 dt <- sdata[sdata$ocorr_solic %in% os_dt,] %>% group_by(year(data_solic), date(data_solic), ocorr_solic) %>% 
                                           summarise(n_solic = n(), C = mean(match)) %>% 
-                                          filter(n_solic >= 10, `year(data_solic)` >= 2005, ocorr_solic == "DESLIZAMENTO DE TERRA") 
-dt
+                                          filter(n_solic >= 100, `year(data_solic)` >= 2005, ocorr_solic == "DESLIZAMENTO DE TERRA") 
+
 #Gráfico de dispersão
-dt %>%  ggplot(aes(x=n_solic, y=C, group = ocorr_solic)) + geom_point()+
-        #stat_smooth(method =  "gam", col = "red")+ #facet_wrap(~ocorr_solic)+ 
+dt %>%  ggplot(aes(x=n_solic, y=C)) + geom_point()+ ylim(0,1)+
+        stat_smooth(method =  "lm", col = "red")+ #facet_wrap(~ocorr_solic)+ 
         labs(title = "Gráfico de dispersão: número de solicitações (n_solic) x indicador (C)",
-         subtitle = "Deslizamentos de terra. n de corte = 100", x = "número de solicitações", y = "indicador")
-
-
-#gráfico de densisdade
-dt %>% ggplot() + geom_density(aes(x=C)) +
-       geom_vline(aes(xintercept = mean(C)),linetype = "dashed", size = 0.6)
-
-#fUNÇÃO EMPIRICA DE DISTRIBUIÇÃO ACUMULADA
-dt %>% ggplot(aes(sample=C)) + stat_qq( geom = "step", size = 1.5)
-
+         subtitle = "Deslizamentos de terra. n de corte = 100", 
+         x = "número de solicitações", 
+         y = "indicador")
 
 #Boxplot
-dt %>% ggplot() + geom_boxplot(aes(x=C)) +coord_flip()
-
+dt %>% ggplot() + geom_boxplot(aes(x=C)) +coord_flip() + xlim(0,1)
 
 summary(dt)
-
-
+cor(dt$n_solic, dt$C, method = c("pearson"))
+cor.test(dt$n_solic, dt$C, method = c("pearson"))
 
 ```
 
@@ -191,25 +187,30 @@ Estudar a variação de (C) de acordo com a forma como as solicitações entram 
 
 Para as análises a seguir, serão consideradas as ocorrências de _AMEAÇA DE DESLIZAMENTO_ e _DESLIZAMENTO DE TERRA_, dada a sua relevância na rotina do órgão e sua homogeneidade durante o periíodo analisado. 
 
-Sob essa perspectiva, analisamos a primeira hipótese, que é um senso comum dentro da CODESAL: _"Desde que saiu da sede do órgão, em 2015, a qualidade do atendimento 199 caiu"_. Essa afirmação parte da premissa que, enquanto na sede, os atendentes do 199 poderiam ser melhor orientados pelos técnicos, podendo tirar dúvidas e recebendo correções de imediato. Além disso, agora que estão trabalhando no formato de Call Center, os atendentes recbem chamados não só do 199 mas também do telefone da Ouvidoria Geral do Município. É rezoável considerar, então, que o atendimento presencial da CODESAL, aqui entitulado _PESSOALMENTE_ deve apresentar um valor de C no mínimo maior que o valor para os atendimentos feitos pelo 199. 
+Sob essa perspectiva, analisamos a primeira hipótese, que é um senso comum dentro da CODESAL: _"Desde que saiu da sede do órgão, em 2015, a qualidade do atendimento 199 caiu"_. Essa afirmação parte da premissa que, enquanto na sede, os atendentes do 199 poderiam ser melhor orientados pelos técnicos, podendo tirar dúvidas e receber correções de imediatas. Além disso, agora que estão trabalhando no formato de Call Center, os atendentes recbem chamados não só do 199 mas também do telefone da Ouvidoria Geral do Município. É rezoável considerar, então, que o atendimento presencial da CODESAL, aqui entitulado _PESSOALMENTE_ deve apresentar um valor de C no mínimo maior que o valor para os atendimentos feitos pelo 199. 
 
 Contudo, o que observamos nos gráficos abaixo nega a hipótese: além de não podermos dizer que houve uma queda de C para o 199 a partir de 2015, para deslizamentos de terra o 199 é mais acertivo que o atendimento presencial  
-```{r}
 
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
 
+dos_os <-sdata[sdata$ocorr_solic %in% os_dt & sdata$desc_orig_solic %in% c("199", "PESSOALMENTE"),] %>% group_by(year(data_solic), desc_orig_solic) %>% 
+                                                                                                       summarise(n = mean(match)*100)
 
-
-sdata[sdata$ocorr_solic %in% os_dt & sdata$desc_orig_solic %in% c("199", "PESSOALMENTE"),] %>% group_by(year(data_solic), desc_orig_solic) %>% 
-                                         summarise(n = mean(match)*100) %>% 
-                                         ggplot() + geom_line(aes(x = `year(data_solic)`, y = n, colour = as.factor(desc_orig_solic)), size = 1.2) +                      
-                                          coord_cartesian(xlim =c(2005, 2019), ylim = c(0, 100)) +   
+dos_os %>% filter(desc_orig_solic == "199") %>% 
+           ggplot() + geom_line(aes(x = `year(data_solic)`, y = n, colour = as.factor(desc_orig_solic)), size = 1.2) +                      
+           coord_cartesian(ylim = c(0, 100)) +   
                                          scale_x_continuous(breaks = seq(2005,2019, 2))+
                                          theme(legend.position = "bottom", legend.box = "horizontal")+
-                                          labs(title = "Indicador de verdadeiro-positivo (C) por canal de atendimento",
+                                          labs(title = "Indicador de verdadeiro-positivo (C) para solicitações abertas via 199.",
+                                               subtitle = "",
                                               caption = "Período analisado: 07/05/2020 a 31/12/2019", 
                                               x = "Ano",
-                                              y = "C",
-                                              colour = "Canal de aberura") 
+                                              y = "C") 
+```
+
+Podemos observar no gráfico acima que o valor de C após 2015 matém o mesmo comportamento que nos anos anteriores, oscilando entre 50% e 65%.
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
 
 sdata[sdata$ocorr_solic %in% os_dt & sdata$desc_orig_solic %in% c("199", "PESSOALMENTE"),] %>% group_by(year(data_solic), ocorr_solic, desc_orig_solic) %>% 
                                          summarise(n = mean(match)*100) %>% 
@@ -222,6 +223,9 @@ sdata[sdata$ocorr_solic %in% os_dt & sdata$desc_orig_solic %in% c("199", "PESSOA
                                               x = "Ano",
                                               y = "C",
                                               colour = "Canal de aberura") 
+```
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
 
 sdata[sdata$ocorr_solic == "ALAGAMENTO" & sdata$desc_orig_solic %in% c("199", "PESSOALMENTE"),] %>% group_by(year(data_solic), desc_orig_solic) %>% 
                                          summarise(n = mean(match)*100) %>% 
@@ -234,9 +238,12 @@ sdata[sdata$ocorr_solic == "ALAGAMENTO" & sdata$desc_orig_solic %in% c("199", "P
                                               x = "Ano",
                                               y = "C",
                                               colour = "Canal de aberura") 
-
-
 ```
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+```
+
+
 
 
 
