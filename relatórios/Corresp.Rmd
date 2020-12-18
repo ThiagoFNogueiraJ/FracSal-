@@ -185,6 +185,11 @@ OS gráficos de boxplot, histograma e q-q plot nos dão uma noção visual do fo
 
 ```{r, animation.hook='gifski', echo=FALSE, warning=FALSE, message=FALSE, fig.align = 'center'}
 
+dt_nteste <- sdata[sdata$ocorr_solic %in% os_dt,] %>% group_by(year(data_solic), date(data_solic), ocorr_solic) %>% 
+                                          summarise(n_solic = n(), C = mean(match)) %>% 
+                                          filter(`year(data_solic)` >= 2005, ocorr_solic == "DESLIZAMENTO DE TERRA") 
+
+
 for (i in seq(1,50,1)){
               plot1 <- dt_nteste[dt_nteste$n_solic >= i,] %>% ggplot() + geom_histogram(aes(x=C)) + 
                                                              xlim(0,1) + ylim(0,50) +
@@ -207,9 +212,6 @@ O teste parte da hipótese nula Ho que considera a distribuição dos dados como
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
 
-dt_nteste <- sdata[sdata$ocorr_solic %in% os_dt,] %>% group_by(year(data_solic), date(data_solic), ocorr_solic) %>% 
-                                          summarise(n_solic = n(), C = mean(match)) %>% 
-                                          filter(`year(data_solic)` >= 2005, ocorr_solic == "DESLIZAMENTO DE TERRA") 
 
 nteste <- data.frame(n_sol = seq(1, 268,1), n_C = 0, p_value =  0,media = 0, dp = 0)
 
