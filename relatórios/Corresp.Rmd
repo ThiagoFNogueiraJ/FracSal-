@@ -21,6 +21,8 @@ library(gifski)
 library(ggpubr)
 library(animation)
 library(patchwork)
+library(padr)
+library(xts)
 ```
 
 ```{r setup, include=FALSE, warning=FALSE, message=FALSE}
@@ -181,15 +183,30 @@ cor.test(dt$n_solic, dt$C, method = c("pearson"))
 A convergência para um valor à medida que o número de solicitações aumenta aponta que C, interpretada como uma variável aleatória, deve seguir uma distribuição de probabilidade normal. Para confirmar tal hipótese, faremos análises gráficas e testes estatísticos. 
 
 OS gráficos de boxplot, histograma e q-q plot nos dão uma noção visual do formato da distribuição. 
+```{r, animation.hook='gifski', echo=FALSE, warning=FALSE, message=FALSE, fig.align = 'center'}
+dt_h <- sdata[sdata$ocorr_solic == "DESLIZAMENTO DE TERRA",]
+dt_ts <- dt_h %>%mutate(data_solic = ymd_hms(data_solic)) %>% 
+  mutate(datahora_solic = floor_date(data_solic,unit = "hour")) %>% 
+  group_by(datahora_solic) %>% 
+  summarise(n_solic = n(), n_true = sum(match)) %>% 
+  as.xts()
+
+aggregate(dt_ts, by=day, sum())
+
+
+dt_ts<- dt_ts %>%  thicken("3 hour") %>% group_by(datahora_solic_3_hour) %>% summarise(sum(n_solic), sum(n_true)) %>% 
+                                 mutate(C = `sum(n_true)`/`sum(n_solic)`) %>%
+                                 rename(date = datahora_solic_3_hour,n_solic =`sum(n_solic)`,n_true =  `sum(n_true)`)
+
+```
 
 
 ```{r, animation.hook='gifski', echo=FALSE, warning=FALSE, message=FALSE, fig.align = 'center'}
-
 dt_nteste <- sdata[sdata$ocorr_solic %in% os_dt,] %>% group_by(year(data_solic), date(data_solic), ocorr_solic) %>% 
                                           summarise(n_solic = n(), C = mean(match)) %>% 
                                           filter(`year(data_solic)` >= 2005, ocorr_solic == "DESLIZAMENTO DE TERRA") 
 
-
+dt_nteste <- dt_ts
 for (i in seq(1,50,1)){
               plot1 <- dt_nteste[dt_nteste$n_solic >= i,] %>% ggplot() + geom_histogram(aes(x=C)) + 
                                                              xlim(0,1) + ylim(0,50) +
