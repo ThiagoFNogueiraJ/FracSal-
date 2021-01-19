@@ -84,6 +84,7 @@ O conjunto de dados final contem 88.760 observações e 17 variáveis.
 ```{r, echo = FALSE, , warning=FALSE, message=FALSE}
 sdata <- pdata %>% mutate(match = ifelse(ocorr_solic == ocorr_vist, TRUE, FALSE))
 head(sdata)
+write.csv(sdata, "corresp_data.csv", row.names = FALSE)
 ```
 
 ## Análises

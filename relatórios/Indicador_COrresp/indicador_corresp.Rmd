@@ -1,0 +1,69 @@
+---
+title: "Indicador de Correspondência"
+author: "Thiago Nogueira"
+date: "19/01/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, echo = FALSE, warning=FALSE, message=FALSE}
+
+library(kableExtra)
+library(ggplot2)
+library(tidyr)
+library(tibble)
+library(dplyr)
+library(lubridate)
+library(RColorBrewer)
+library(ggrepel)
+library(esquisse)
+library(zoo)
+library(forcats)
+library(tidyverse)
+library(gganimate)
+library(gifski)
+library(ggpubr)
+library(animation)
+library(patchwork)
+library(padr)
+library(xts)
+```
+
+
+# Introdução 
+
+A criação deste indicador foi motivada, entre outros fatores, por uma necessidade de avaliar a eficácia de priorizar o atendimento a certos tipos de ocorrência. 
+Sua construção é bem simples mas tem vasto potencial de exploração. Neste relatório exploraremos a variação do indicador com as dimensões temporais (data de abertura do chamado), espacial (local) e por entrada (canal de atendimento). Ao explorar esse último fator, buscamos verificar se o indicador pode também ser uma métrica de qualidade das entradas das solicitações. 
+
+# indicador de correspondência ( C). 
+
+É uma medida resumo, frequência relativa, que nos informa em quantos % de dada amostra o tipo de ocorrência indicado na solicitação confere com o observado pelo técnico vistoriador. 
+
+Abaixo, temos uma amostra com dez solicitações. O campo “OCORRÊNCIA SOLICITAÇÃO” nos diz que são chamados de deslizamentos de terra, enquanto a coluna “OCORRÊNCIA VISTORIA” informa qual a situação observada pelo técnico. A última coluna, “IGUAL”, tem valores TRUE caso as duas colunas anteriores tenham valores iguais e FALSE caso não tenham. 
+
+```{r,echo = FALSE, warning=FALSE, message=FALSE}
+sdata <- read.csv("corresp_data.csv", sep = ",")
+```
+
+```{r,echo = FALSE, warning=FALSE, message=FALSE}
+amostra <- sdata %>% filter(ocorr_solic == "DESLIZAMENTO DE TERRA" & year(data_solic)==2019) %>% 
+                     sample_n(10) %>% 
+                     select(c(1,2,6,10,13)) %>% 
+                     mutate(igual =  ifelse(ocorr_solic == ocorr_vist, TRUE, FALSE)) %>% 
+                     rename(data_abertura = data_solic, processo = cod_proc, bairro = nome_bairro, solicitacao = ocorr_solic, vistoria = ocorr_vist)
+
+amostra %>% 
+  kbl() %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), font_size = 12)
+
+c_amostra = amostra %>% summarise(C = mean(igual))
+```
+A partir de tais dados, calculamos o indicador como:
+
+$C = \frac{n(TRUE)}{n(TOTAL)}=$ `r C_amostra` 
+
+
+
