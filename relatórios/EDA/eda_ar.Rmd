@@ -1,0 +1,44 @@
+---
+title: "Análise Exploratória"
+author: "Thiago Nogueira"
+date: "16/03/2021"
+output: html_document
+---
+
+
+
+```{r, echo = FALSE, warning=FALSE, message=FALSE}
+library(tidyverse)
+library(lubridate)
+library(xlsx)
+```
+LEITURA E FORMATAÇÃO 
+```{r, echo = FALSE, warning=FALSE, message=FALSE}
+raw_data <- read.csv("./relatórios/sgdc_anom.csv", sep = ",") %>% 
+            rename(cod_log = cod_logra)
+
+area_codlog <- read.xlsx("./relatórios/area_codlog.xlsx", header = TRUE, sheetIndex = 1, rowIndex = 2:4191) %>% 
+  rename(cod_log = COD_LOG)
+  
+pdata <- merge(x = raw_data, y= area_codlog, by = "cod_log", all.x = TRUE)
+pdata <- pdata[complete.cases(pdata$AREA_RISCO),] %>% 
+              select(-c("TOPONIM", "NOME_BAIRRO", "COD_BAIRRO")) %>% 
+              rename(area_risco = AREA_RISCO)
+```
+
+```{r}
+pdata %>% group_by(area_risco) %>% 
+        summarise(n = n()) %>% 
+        arrange(-n)
+pdatat <- pdata
+pdatat$area_risco <- ifelse(pdatat$area_risco %in% c("Bom Jua", "Bom Jua 2"), "Bom Jua", pdatat$area_risco)
+pdatat$area_risco <- ifelse(pdatat$area_risco %in% c( "Calabetao", "Calabetao 2"), "Calabetao", pdatat$area_risco)
+
+pdatat %>% filter(area_risco %in% c("Mamede", "Bom Jua",  "Calabetao", "Vila Picasso")) %>%  
+        group_by(area_risco, year(data_solic)) %>% 
+        summarise(n = n()) %>% 
+        ggplot(aes(x = `year(data_solic)`, y= n)) +geom_line() + facet_wrap(~area_risco)
+```
+
+
+
